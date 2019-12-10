@@ -1,3 +1,4 @@
+"""Tests for GeoRSS distance helper."""
 import unittest
 from unittest.mock import MagicMock
 

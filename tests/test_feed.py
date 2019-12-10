@@ -25,9 +25,11 @@ async def test_update_ok(aresponses, event_loop):
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
 
-        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1, "http://test.url/testpath")
+        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1,
+                              "http://test.url/testpath")
         assert repr(feed) == "<MockGeoRssFeed(home=(-31.0, 151.0), " \
-                             "url=http://test.url/testpath, radius=None, categories=None)>"
+                             "url=http://test.url/testpath, radius=None, " \
+                             "categories=None)>"
         status, entries = await feed.update()
         assert status == UPDATE_OK
         assert entries is not None
@@ -75,7 +77,8 @@ async def test_update_ok_feed_2(aresponses, event_loop):
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
 
-        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1, "http://test.url/testpath")
+        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1,
+                              "http://test.url/testpath")
         status, entries = await feed.update()
         assert status == UPDATE_OK
         assert entries is not None
@@ -101,7 +104,8 @@ async def test_update_ok_feed_3(aresponses, event_loop):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1, "http://test.url/testpath")
+        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1,
+                              "http://test.url/testpath")
         status, entries = await feed.update()
         assert status == UPDATE_OK
         assert entries is not None
@@ -137,7 +141,8 @@ async def test_update_ok_with_radius_filtering(aresponses, event_loop):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-        feed = MockGeoRssFeed(websession, HOME_COORDINATES_2, "http://test.url/testpath", filter_radius=90.0)
+        feed = MockGeoRssFeed(websession, HOME_COORDINATES_2,
+                              "http://test.url/testpath", filter_radius=90.0)
         status, entries = await feed.update()
         assert status == UPDATE_OK
         assert entries is not None
@@ -194,7 +199,8 @@ async def test_update_error(aresponses, event_loop):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1, "http://test.url/badpath")
+        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1,
+                              "http://test.url/badpath")
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
 
@@ -207,7 +213,8 @@ async def test_update_with_request_exception(aresponses, event_loop):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1, "http://test.url/badpath")
+        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1,
+                              "http://test.url/badpath")
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
         assert entries is None
@@ -226,9 +233,11 @@ async def test_update_bom(aresponses, event_loop):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1, "http://test.url/testpath")
+        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1,
+                              "http://test.url/testpath")
         assert repr(feed) == "<MockGeoRssFeed(home=(-31.0, 151.0), " \
-                             "url=http://test.url/testpath, radius=None, categories=None)>"
+                             "url=http://test.url/testpath, radius=None, " \
+                             "categories=None)>"
         status, entries = await feed.update()
         assert status == UPDATE_OK
         assert entries is not None
