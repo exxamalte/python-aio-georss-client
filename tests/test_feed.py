@@ -224,11 +224,15 @@ async def test_update_with_request_exception(aresponses, event_loop):
 @pytest.mark.asyncio
 async def test_update_bom(aresponses, event_loop):
     """Test updating feed with BOM (byte order mark) is ok."""
+    xml = "\xef\xbb\xbf<?xml version='1.0' encoding='utf-8'?>" \
+          "<rss version='2.0'><channel><item><title>Title 1</title>" \
+          "</item></channel></rss>"
     aresponses.add(
         "test.url",
         "/testpath",
         "get",
-        aresponses.Response(text=load_fixture('xml_parser_bom_1.xml'),
+        aresponses.Response(text=xml,
+                            charset='iso-8859-1',
                             status=200),
     )
 

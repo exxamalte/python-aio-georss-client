@@ -28,7 +28,6 @@ class GeoRssFeed(ABC):
         self._filter_radius = filter_radius
         self._filter_categories = filter_categories
         self._url = url
-        # self._request = requests.Request(method="GET", url=url).prepare()
         self._last_timestamp = None
 
     def __repr__(self):
@@ -52,7 +51,7 @@ class GeoRssFeed(ABC):
 
     async def update(self):
         """Update from external source and return filtered entries."""
-        status, data = self._fetch()
+        status, data = await self._fetch()
         if status == UPDATE_OK:
             if data:
                 entries = []
@@ -86,8 +85,7 @@ class GeoRssFeed(ABC):
             ) as response:
                 try:
                     response.raise_for_status()
-                    await self._pre_process_response(response)
-                    text = await response.text()
+                    text = await self._read_response(response)
                     parser = XmlParser(self._additional_namespaces())
                     feed_data = parser.parse(text)
                     self.parser = parser
@@ -97,10 +95,6 @@ class GeoRssFeed(ABC):
                     _LOGGER.warning("Fetching data from %s failed with %s",
                                     self._url, client_error)
                     return UPDATE_ERROR, None
-                # except JSONDecodeError as decode_ex:
-                #     _LOGGER.warning("Unable to parse JSON from %s: %s",
-                #                     self._url, decode_ex)
-                #     return UPDATE_ERROR, None
         except client_exceptions.ClientError as client_error:
             _LOGGER.warning("Requesting data from %s failed with "
                             "client error: %s",
@@ -111,34 +105,17 @@ class GeoRssFeed(ABC):
                             "timeout error", self._url)
             return UPDATE_ERROR, None
 
-        #     with requests.Session() as session:
-        #         response = session.send(self._request, timeout=10)
-        #     if response.ok:
-        #         self._pre_process_response(response)
-        #         parser = XmlParser(self._additional_namespaces())
-        #         feed_data = parser.parse(response.text)
-        #         self.parser = parser
-        #         self.feed_data = feed_data
-        #         return UPDATE_OK, feed_data
-        #     else:
-        #         _LOGGER.warning(
-        #             "Fetching data from %s failed with status %s",
-        #             self._request.url, response.status_code)
-        #         return UPDATE_ERROR, None
-        # except requests.exceptions.RequestException as request_ex:
-        #     _LOGGER.warning("Fetching data from %s failed with %s",
-        #                     self._request.url, request_ex)
-        #     return UPDATE_ERROR, None
-
-    async def _pre_process_response(self, response):
+    async def _read_response(self, response):
         """Pre-process the response."""
-        # TODO: check what requires async access
         if response:
-            _LOGGER.debug("Response encoding %s", response.encoding)
-            if response.content.startswith(codecs.BOM_UTF8):
-                _LOGGER.debug("UTF8 byte order mark detected, "
-                              "setting encoding to 'utf-8-sig'")
-                response.encoding = 'utf-8-sig'
+            _LOGGER.debug("Response encoding %s", response.get_encoding())
+            raw_response = await response.read()
+            print(raw_response)
+            print(raw_response.startswith(codecs.BOM_UTF8))
+            if raw_response.startswith(codecs.BOM_UTF8):
+                return codecs.decode(raw_response, 'utf-8-sig')
+            return await response.text()
+        return None
 
     def _filter_entries(self, entries):
         """Filter the provided entries."""
