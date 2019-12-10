@@ -111,7 +111,7 @@ class GeoRssFeed(ABC):
             _LOGGER.debug("Response encoding %s", response.get_encoding())
             raw_response = await response.read()
             if raw_response.startswith(codecs.BOM_UTF8):
-                return codecs.decode(raw_response, 'utf-8-sig')
+                return await response.text('utf-8-sig')
             return await response.text()
         return None
 
