@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/exxamalte/python-aio-georss-client/badge.svg?branch=master)](https://coveralls.io/github/exxamalte/python-aio-georss-client?branch=master)
 [![PyPi](https://img.shields.io/pypi/v/aio-georss-client.svg)](https://pypi.python.org/pypi/aio-georss-client)
 [![Version](https://img.shields.io/pypi/pyversions/aio-georss-client.svg)](https://pypi.python.org/pypi/aio-georss-client)
-[![Maintainability](https://api.codeclimate.com/v1/badges/4f7b12fe27fc845b5712/maintainability)](https://codeclimate.com/github/exxamalte/python-aio-georss-client/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/29d6a4a8caeac24a91bd/maintainability)](https://codeclimate.com/github/exxamalte/python-aio-georss-client/maintainability)
 
 This library provides convenient async access to 
 to [GeoRSS](http://www.georss.org/) Feeds.
