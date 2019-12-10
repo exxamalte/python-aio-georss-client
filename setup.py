@@ -11,7 +11,7 @@ URL = "https://github.com/exxamalte/python-aio-georss-client"
 REQUIRES = [
     'aiohttp',
     'haversine>=1.0.1',
-    'xmltodict>=0.11.0',
+    'xmltodict>=0.12.0',
     'dateparser>=0.7.0',
 ]
 
