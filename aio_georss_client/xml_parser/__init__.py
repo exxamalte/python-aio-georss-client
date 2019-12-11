@@ -20,7 +20,7 @@ DEFAULT_NAMESPACES = {
     'http://www.georss.org/georss': 'georss',
     'http://www.w3.org/2003/01/geo/wgs84_pos#': 'geo',
     'http://www.opengis.net/gml': 'gml',
-    'http://www.gdacs.org/': 'gdacs',
+    'http://www.gdacs.org': 'gdacs',
 }
 KEYS_DATE = [XML_TAG_DC_DATE, XML_TAG_LAST_BUILD_DATE, XML_TAG_PUB_DATE,
              XML_TAG_PUBLISHED, XML_TAG_UPDATED]
