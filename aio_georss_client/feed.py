@@ -108,8 +108,8 @@ class GeoRssFeed(ABC):
     async def _read_response(self, response):
         """Pre-process the response."""
         if response:
-            _LOGGER.debug("Response encoding %s", response.get_encoding())
             raw_response = await response.read()
+            _LOGGER.debug("Response encoding %s", response.get_encoding())
             if raw_response.startswith(codecs.BOM_UTF8):
                 return await response.text('utf-8-sig')
             return await response.text()
