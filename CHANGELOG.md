@@ -1,5 +1,8 @@
 # Changes
 
+## 0.3 (11/12/2019)
+* Fix GDACS XML namespace.
+
 ## 0.2 (11/12/2019)
 * Fixes bug that prevented external source from being read correctly.
 
