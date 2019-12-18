@@ -1,6 +1,4 @@
-"""
-XML Parser.
-"""
+"""XML Parser."""
 import dateparser as dateparser
 import logging
 import xmltodict

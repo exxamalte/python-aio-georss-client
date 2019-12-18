@@ -1,6 +1,4 @@
-"""
-GeoRSS feed image.
-"""
+"""GeoRSS feed image."""
 from typing import Optional
 
 from aio_georss_client.consts import XML_TAG_URL, XML_TAG_HEIGHT, XML_TAG_WIDTH

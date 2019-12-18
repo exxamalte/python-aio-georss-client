@@ -1,6 +1,4 @@
-"""
-GeoRSS feed item.
-"""
+"""GeoRSS feed item."""
 from typing import Optional, List
 
 from aio_georss_client.consts import XML_TAG_GUID, XML_TAG_ID, XML_TAG_SOURCE, \
