@@ -110,7 +110,7 @@ async def test_update_ok_feed_3(aresponses, event_loop):
         status, entries = await feed.update()
         assert status == UPDATE_OK
         assert entries is not None
-        assert len(entries) == 4
+        assert len(entries) == 5
 
         feed_entry = entries[0]
         assert feed_entry.external_id == "1234"
@@ -143,6 +143,14 @@ async def test_update_ok_feed_3(aresponses, event_loop):
         assert isinstance(feed_entry.geometries[0], Point)
         assert isinstance(feed_entry.geometries[1], Point)
         assert feed_entry.coordinates == (-33.2345, 154.789)
+        assert round(abs(feed_entry.distance_to_home - 172.3), 1) == 0
+
+        feed_entry = entries[4]
+        assert feed_entry.external_id == "5678"
+        assert len(feed_entry.geometries) == 2
+        assert isinstance(feed_entry.geometries[0], Point)
+        assert isinstance(feed_entry.geometries[1], Polygon)
+        assert feed_entry.coordinates == (-31.2345, 152.789)
         assert round(abs(feed_entry.distance_to_home - 172.3), 1) == 0
 
 

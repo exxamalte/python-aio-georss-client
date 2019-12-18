@@ -7,6 +7,7 @@ from typing import Optional
 
 from .geo_rss_distance_helper import GeoRssDistanceHelper
 from .consts import CUSTOM_ATTRIBUTE
+from .xml_parser.geometry import Point
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,8 +34,14 @@ class FeedEntry(ABC):
     @property
     def coordinates(self):
         """Return the best coordinates (latitude, longitude) of this entry."""
-        # This currently just returns the first entry.
+        # This looks for the first point in the list of geometries. If there
+        # is no point then return the first entry.
         if self.geometries and len(self.geometries) >= 1:
+            for entry in self.geometries:
+                print("entry = ", entry)
+                if isinstance(entry, Point):
+                    return GeoRssDistanceHelper.extract_coordinates(entry)
+            # No point found.
             return GeoRssDistanceHelper.extract_coordinates(self.geometries[0])
         return None
 
