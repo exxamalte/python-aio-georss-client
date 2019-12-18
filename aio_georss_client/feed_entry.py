@@ -24,17 +24,18 @@ class FeedEntry(ABC):
         return '<{}(id={})>'.format(self.__class__.__name__, self.external_id)
 
     @property
-    def geometry(self):
-        """Return all geometry details of this entry."""
+    def geometries(self):
+        """Return all geometries of this entry."""
         if self._rss_entry:
-            return self._rss_entry.geometry
+            return self._rss_entry.geometries
         return None
 
     @property
     def coordinates(self):
         """Return the best coordinates (latitude, longitude) of this entry."""
-        if self.geometry:
-            return GeoRssDistanceHelper.extract_coordinates(self.geometry)
+        # This currently just returns the first entry.
+        if self.geometries and len(self.geometries) >= 1:
+            return GeoRssDistanceHelper.extract_coordinates(self.geometries[0])
         return None
 
     @property
@@ -91,8 +92,11 @@ class FeedEntry(ABC):
     @property
     def distance_to_home(self):
         """Return the distance in km of this entry to the home coordinates."""
-        return GeoRssDistanceHelper.distance_to_geometry(
-            self._home_coordinates, self.geometry)
+        # This currently just returns the distance to the first entry.
+        if self.geometries and len(self.geometries) >= 1:
+            return GeoRssDistanceHelper.distance_to_geometry(
+                self._home_coordinates, self.geometries[0])
+        return float("inf")
 
     @property
     def description(self) -> Optional[str]:
