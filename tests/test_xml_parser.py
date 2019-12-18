@@ -1,6 +1,8 @@
 """Tests for XML parser."""
 import datetime
 import unittest
+from typing import List
+
 from pyexpat import ExpatError
 
 from aio_georss_client.xml_parser import XmlParser
@@ -98,9 +100,11 @@ class TestXmlParser(unittest.TestCase):
         assert feed_entry.id == "GUID 1"
         assert feed_entry.source == "Source 1"
         assert feed_entry.category == ["Category 1"]
-        self.assertIsInstance(feed_entry.geometry, Point)
-        assert feed_entry.geometry.latitude == -37.4567
-        assert feed_entry.geometry.longitude == 149.3456
+        geometries = feed_entry.geometries
+        assert len(geometries) == 1
+        self.assertIsInstance(geometries[0], Point)
+        assert geometries[0].latitude == -37.4567
+        assert geometries[0].longitude == 149.3456
         assert feed_entry.get_additional_attribute('random') == "Random 1"
         assert repr(feed_entry) == "<FeedItem(GUID 1)>"
 
@@ -116,9 +120,11 @@ class TestXmlParser(unittest.TestCase):
                                  tzinfo=datetime.timezone.utc)
         assert feed_entry.guid == "GUID 2"
         assert feed_entry.category == ["Category 2"]
-        self.assertIsInstance(feed_entry.geometry, Point)
-        assert feed_entry.geometry.latitude == -37.5678
-        assert feed_entry.geometry.longitude == 149.4567
+        geometries = feed_entry.geometries
+        assert len(geometries) == 1
+        self.assertIsInstance(geometries[0], Point)
+        assert geometries[0].latitude == -37.5678
+        assert geometries[0].longitude == 149.4567
 
         feed_entry = feed.entries[2]
         assert feed_entry.title == "Title 3"
@@ -133,9 +139,11 @@ class TestXmlParser(unittest.TestCase):
         assert feed_entry.category == ["Category 3A",
                                        "Category 3B",
                                        "Category 3C"]
-        self.assertIsInstance(feed_entry.geometry, Point)
-        assert feed_entry.geometry.latitude == -37.6789
-        assert feed_entry.geometry.longitude == 149.5678
+        geometries = feed_entry.geometries
+        assert len(geometries) == 1
+        self.assertIsInstance(geometries[0], Point)
+        assert geometries[0].latitude == -37.6789
+        assert geometries[0].longitude == 149.5678
 
         feed_entry = feed.entries[3]
         assert feed_entry.title == "Title 4"
@@ -147,9 +155,11 @@ class TestXmlParser(unittest.TestCase):
         assert feed_entry.published_date == datetime.datetime(
             2018, 9, 30, 21, 36, 48,
             tzinfo=datetime.timezone(datetime.timedelta(hours=10), 'AEST'))
-        self.assertIsInstance(feed_entry.geometry, Point)
-        assert feed_entry.geometry.latitude == -37.789
-        assert feed_entry.geometry.longitude == 149.6789
+        geometries = feed_entry.geometries
+        assert len(geometries) == 1
+        self.assertIsInstance(geometries[0], Point)
+        assert geometries[0].latitude == -37.789
+        assert geometries[0].longitude == 149.6789
 
         feed_entry = feed.entries[4]
         assert feed_entry.title == "Title 5"
@@ -157,9 +167,11 @@ class TestXmlParser(unittest.TestCase):
         assert feed_entry.published_date == datetime.datetime(
             2018, 9, 20, 18, 1, 55,
             tzinfo=datetime.timezone(datetime.timedelta(hours=2), 'CEST'))
-        self.assertIsInstance(feed_entry.geometry, Polygon)
-        assert feed_entry.geometry.centroid.latitude == -30.32
-        assert feed_entry.geometry.centroid.longitude == 150.32
+        geometries = feed_entry.geometries
+        assert len(geometries) == 1
+        self.assertIsInstance(geometries[0], Polygon)
+        assert geometries[0].centroid.latitude == -30.32
+        assert geometries[0].centroid.longitude == 150.32
 
         feed_entry = feed.entries[5]
         assert feed_entry.title == "Title 6"
@@ -167,9 +179,11 @@ class TestXmlParser(unittest.TestCase):
         assert feed_entry.published_date == datetime.datetime(
             2018, 10, 7, 19,52,
             tzinfo=datetime.timezone(datetime.timedelta(hours=-7), 'PDT'))
-        self.assertIsInstance(feed_entry.geometry, Polygon)
-        assert feed_entry.geometry.centroid.latitude == -30.32
-        assert feed_entry.geometry.centroid.longitude == 150.32
+        geometries = feed_entry.geometries
+        assert len(geometries) == 1
+        self.assertIsInstance(geometries[0], Polygon)
+        assert geometries[0].centroid.latitude == -30.32
+        assert geometries[0].centroid.longitude == 150.32
 
     def test_complex_2(self):
         """Test parsing various actual XML files."""
@@ -230,11 +244,37 @@ class TestXmlParser(unittest.TestCase):
         feed_entry = feed.entries[0]
         self.assertIsNone(feed_entry.title)
         self.assertIsNone(feed_entry.published_date)
-        self.assertIsNone(feed_entry.geometry)
+        assert len(feed_entry.geometries) == 0
 
         feed_entry = feed.entries[1]
         self.assertIsNone(feed_entry.title)
-        self.assertIsNone(feed_entry.geometry)
+        assert len(feed_entry.geometries) == 0
+
+    def test_geometries_2(self):
+        """Test parsing various geometries in entries."""
+        xml_parser = XmlParser()
+        xml = load_fixture('xml_parser_geometries_1.xml')
+        feed = xml_parser.parse(xml)
+        self.assertIsNotNone(feed)
+
+        assert feed.title == "Feed Title 1"
+        self.assertIsNotNone(feed.entries)
+        assert len(feed.entries) == 6
+
+        feed_entry = feed.entries[0]
+        assert feed_entry.title == "Title 1"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 3
+
+        feed_entry = feed.entries[1]
+        assert feed_entry.title == "Title 2"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 3
+
+        feed_entry = feed.entries[2]
+        assert feed_entry.title == "Title 3"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 2
 
     def test_byte_order_mark(self):
         """Test parsing an XML file with byte order mark."""

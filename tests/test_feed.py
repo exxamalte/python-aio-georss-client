@@ -5,6 +5,7 @@ import aiohttp
 import pytest
 
 from aio_georss_client.consts import UPDATE_OK, UPDATE_ERROR
+from aio_georss_client.xml_parser.geometry import Point, Polygon
 from tests import MockGeoRssFeed
 from tests.utils import load_fixture
 
@@ -113,17 +114,25 @@ async def test_update_ok_feed_3(aresponses, event_loop):
 
         feed_entry = entries[0]
         assert feed_entry.external_id == "1234"
+        assert len(feed_entry.geometries) == 1
+        assert isinstance(feed_entry.geometries[0], Polygon)
         assert feed_entry.coordinates == (-34.93728111547821,
                                           148.59710883878262)
         assert round(abs(feed_entry.distance_to_home - 491.7), 1) == 0
 
         feed_entry = entries[1]
         assert feed_entry.external_id == "2345"
+        assert len(feed_entry.geometries) == 2
+        assert isinstance(feed_entry.geometries[0], Point)
+        assert isinstance(feed_entry.geometries[1], Polygon)
         assert feed_entry.coordinates == (-34.937170989, 148.597182317)
         assert round(abs(feed_entry.distance_to_home - 491.8), 1) == 0
 
         feed_entry = entries[2]
         assert feed_entry.external_id == "3456"
+        assert len(feed_entry.geometries) == 2
+        assert isinstance(feed_entry.geometries[0], Polygon)
+        assert isinstance(feed_entry.geometries[1], Polygon)
         assert feed_entry.coordinates == (-29.962746645660683,
                                           152.43090880416074)
         assert round(abs(feed_entry.distance_to_home - 176.5), 1) == 0
