@@ -1,6 +1,4 @@
-"""
-Geometry models.
-"""
+"""Geometry models."""
 from typing import Optional
 
 

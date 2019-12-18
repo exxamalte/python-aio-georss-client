@@ -1,6 +1,4 @@
-"""
-GeoRSS feed dict source.
-"""
+"""GeoRSS feed dict source."""
 from typing import Optional
 
 from aio_georss_client.consts import XML_CDATA, XML_TAG_TITLE, \

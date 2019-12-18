@@ -1,6 +1,4 @@
-"""
-GeoRSS feed models.
-"""
+"""GeoRSS feed models."""
 import logging
 from typing import Optional
 

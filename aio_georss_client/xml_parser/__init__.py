@@ -1,6 +1,4 @@
-"""
-XML Parser.
-"""
+"""XML Parser."""
 import dateparser as dateparser
 import logging
 import xmltodict
@@ -55,7 +53,12 @@ class XmlParser:
                 for i in range(0, len(coordinate_values)):
                     point_coordinates.append(
                         float(coordinate_values[i]))
-                return key, point_coordinates
+                # Return tuple of coordinates to make this conversion
+                # compatible with parsing multiple tags of the same type and
+                # combining all values into a single array.
+                # If we just returned an array here, coordinates would be mixed
+                # up like: [lat1, lon1, [lat2, lon2], [lat3, lon3]]
+                return key, tuple(point_coordinates)
             if key in KEYS_INT and value:
                 return key, int(value)
         except (ValueError, TypeError) as error:

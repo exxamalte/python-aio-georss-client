@@ -1,6 +1,4 @@
-"""
-GeoRSS feed or feed item.
-"""
+"""GeoRSS feed or feed item."""
 import datetime
 from typing import Optional
 

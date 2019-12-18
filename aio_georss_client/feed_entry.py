@@ -7,6 +7,7 @@ from typing import Optional
 
 from .geo_rss_distance_helper import GeoRssDistanceHelper
 from .consts import CUSTOM_ATTRIBUTE
+from .xml_parser.geometry import Point
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,17 +25,24 @@ class FeedEntry(ABC):
         return '<{}(id={})>'.format(self.__class__.__name__, self.external_id)
 
     @property
-    def geometry(self):
-        """Return all geometry details of this entry."""
+    def geometries(self):
+        """Return all geometries of this entry."""
         if self._rss_entry:
-            return self._rss_entry.geometry
+            return self._rss_entry.geometries
         return None
 
     @property
     def coordinates(self):
         """Return the best coordinates (latitude, longitude) of this entry."""
-        if self.geometry:
-            return GeoRssDistanceHelper.extract_coordinates(self.geometry)
+        # This looks for the first point in the list of geometries. If there
+        # is no point then return the first entry.
+        if self.geometries and len(self.geometries) >= 1:
+            for entry in self.geometries:
+                print("entry = ", entry)
+                if isinstance(entry, Point):
+                    return GeoRssDistanceHelper.extract_coordinates(entry)
+            # No point found.
+            return GeoRssDistanceHelper.extract_coordinates(self.geometries[0])
         return None
 
     @property
@@ -91,8 +99,15 @@ class FeedEntry(ABC):
     @property
     def distance_to_home(self):
         """Return the distance in km of this entry to the home coordinates."""
-        return GeoRssDistanceHelper.distance_to_geometry(
-            self._home_coordinates, self.geometry)
+        # This goes through all geometries and reports back the closest
+        # distance to any of them.
+        distance = float("inf")
+        if self.geometries and len(self.geometries) >= 1:
+            for geometry in self.geometries:
+                distance = min(distance,
+                               GeoRssDistanceHelper.distance_to_geometry(
+                                   self._home_coordinates, geometry))
+        return distance
 
     @property
     def description(self) -> Optional[str]:
