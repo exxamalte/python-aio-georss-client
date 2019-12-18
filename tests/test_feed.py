@@ -110,7 +110,7 @@ async def test_update_ok_feed_3(aresponses, event_loop):
         status, entries = await feed.update()
         assert status == UPDATE_OK
         assert entries is not None
-        assert len(entries) == 3
+        assert len(entries) == 4
 
         feed_entry = entries[0]
         assert feed_entry.external_id == "1234"
@@ -126,7 +126,7 @@ async def test_update_ok_feed_3(aresponses, event_loop):
         assert isinstance(feed_entry.geometries[0], Point)
         assert isinstance(feed_entry.geometries[1], Polygon)
         assert feed_entry.coordinates == (-34.937170989, 148.597182317)
-        assert round(abs(feed_entry.distance_to_home - 491.8), 1) == 0
+        assert round(abs(feed_entry.distance_to_home - 491.7), 1) == 0
 
         feed_entry = entries[2]
         assert feed_entry.external_id == "3456"
@@ -136,6 +136,14 @@ async def test_update_ok_feed_3(aresponses, event_loop):
         assert feed_entry.coordinates == (-29.962746645660683,
                                           152.43090880416074)
         assert round(abs(feed_entry.distance_to_home - 176.5), 1) == 0
+
+        feed_entry = entries[3]
+        assert feed_entry.external_id == "4567"
+        assert len(feed_entry.geometries) == 2
+        assert isinstance(feed_entry.geometries[0], Point)
+        assert isinstance(feed_entry.geometries[1], Point)
+        assert feed_entry.coordinates == (-33.2345, 154.789)
+        assert round(abs(feed_entry.distance_to_home - 172.3), 1) == 0
 
 
 @pytest.mark.asyncio

@@ -92,11 +92,15 @@ class FeedEntry(ABC):
     @property
     def distance_to_home(self):
         """Return the distance in km of this entry to the home coordinates."""
-        # This currently just returns the distance to the first entry.
+        # This goes through all geometries and reports back the closest
+        # distance to any of them.
+        distance = float("inf")
         if self.geometries and len(self.geometries) >= 1:
-            return GeoRssDistanceHelper.distance_to_geometry(
-                self._home_coordinates, self.geometries[0])
-        return float("inf")
+            for geometry in self.geometries:
+                distance = min(distance,
+                               GeoRssDistanceHelper.distance_to_geometry(
+                                   self._home_coordinates, geometry))
+        return distance
 
     @property
     def description(self) -> Optional[str]:
