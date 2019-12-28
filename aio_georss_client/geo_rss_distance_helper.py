@@ -84,8 +84,9 @@ class GeoRssDistanceHelper:
         if bbox.bottom_left.longitude > bbox.top_right.longitude:
             # bounding box spans across 180 degree longitude
             transposed_top_right_longitude = bbox.top_right.longitude + 360
-        if home_coordinates[1] < 0:
-            transposed_point_longitude += 360
+            # only in this case, also transpose the point's longitude
+            if transposed_point_longitude < 0:
+                transposed_point_longitude += 360
         if home_coordinates[0] > bbox.top_right.latitude:
             # 1 - above-left
             if transposed_point_longitude < bbox.bottom_left.longitude:
