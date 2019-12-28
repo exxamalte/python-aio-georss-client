@@ -1,7 +1,6 @@
 """Tests for XML parser."""
 import datetime
 import unittest
-from typing import List
 
 from pyexpat import ExpatError
 
@@ -259,7 +258,7 @@ class TestXmlParser(unittest.TestCase):
 
         assert feed.title == "Feed Title 1"
         self.assertIsNotNone(feed.entries)
-        assert len(feed.entries) == 6
+        assert len(feed.entries) == 8
 
         feed_entry = feed.entries[0]
         assert feed_entry.title == "Title 1"
@@ -276,6 +275,31 @@ class TestXmlParser(unittest.TestCase):
         self.assertIsNotNone(feed_entry.geometries)
         assert len(feed_entry.geometries) == 2
 
+        feed_entry = feed.entries[3]
+        assert feed_entry.title == "Title 4"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 2
+
+        feed_entry = feed.entries[4]
+        assert feed_entry.title == "Title 5"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 3
+
+        feed_entry = feed.entries[5]
+        assert feed_entry.title == "Title 6"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 2
+
+        feed_entry = feed.entries[6]
+        assert feed_entry.title == "Title 7"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 2
+
+        feed_entry = feed.entries[7]
+        assert feed_entry.title == "Title 8"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 1
+
     def test_byte_order_mark(self):
         """Test parsing an XML file with byte order mark."""
         xml_parser = XmlParser()
@@ -286,29 +310,3 @@ class TestXmlParser(unittest.TestCase):
         # This will raise an error because the parser can't handle
         with self.assertRaises(ExpatError):
             xml_parser.parse(xml)
-
-
-class TestGeometries(unittest.TestCase):
-    """Test geometries."""
-
-    def test_point(self):
-        """Test point."""
-        point = Point(-37.1234, 149.2345)
-        assert point.latitude == -37.1234
-        assert point.longitude == 149.2345
-        assert repr(point) == "<Point(latitude=-37.1234, longitude=149.2345)>"
-
-    def test_polygon(self):
-        """Test polygon."""
-        polygon = Polygon([
-            Point(-30.1, 150.1),
-            Point(-30.2, 150.2),
-            Point(-30.4, 150.4),
-            Point(-30.8, 150.8),
-            Point(-30.1, 150.1)
-        ])
-        assert len(polygon.points) == 5
-        assert polygon.centroid.latitude == -30.32
-        assert polygon.centroid.longitude == 150.32
-        assert repr(polygon) == "<Polygon(centroid=" \
-                                "<Point(latitude=-30.32, longitude=150.32)>)>"

@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import MagicMock
 
 from aio_georss_client.geo_rss_distance_helper import GeoRssDistanceHelper
-from aio_georss_client.xml_parser.geometry import Point, Polygon
+from aio_georss_client.xml_parser.geometry import Point, Polygon, BoundingBox
 
 
 class TestGeoRssDistanceHelper(unittest.TestCase):
@@ -56,6 +56,84 @@ class TestGeoRssDistanceHelper(unittest.TestCase):
         distance = GeoRssDistanceHelper.\
             distance_to_geometry(home_coordinates, mock_polygon)
         self.assertAlmostEqual(distance, 110.6, 1)
+
+    def test_distance_to_bbox_1(self):
+        """Test calculating distance to bounding box."""
+        home_coordinates = [20.0, 20.0]
+        # 1. inside
+        mock_bbox = BoundingBox(Point(10.0, 10.0),
+                                Point(30.0, 30.0))
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 0.0, 1)
+        # 2. above-left
+        mock_bbox = BoundingBox(Point(10.0, 25.0),
+                                Point(15.0, 30.0))
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 768.1, 1)
+        # 3. above
+        mock_bbox = BoundingBox(Point(10.0, 15.0),
+                                Point(15.0, 25.0))
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 556.0, 1)
+        # 4. above-right
+        mock_bbox = BoundingBox(Point(10.0, 10.0),
+                                Point(15.0, 15.0))
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 768.1, 1)
+        # 5. left
+        mock_bbox = BoundingBox(Point(15.0, 25.0),
+                                Point(25.0, 30.0))
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 522.4, 1)
+        # 6. right
+        mock_bbox = BoundingBox(Point(15.0, 10.0),
+                                Point(25.0, 15.0))
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 522.4, 1)
+        # 7. below-left
+        mock_bbox = BoundingBox(Point(25.0, 25.0),
+                                Point(30.0, 30.0))
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 756.8, 1)
+        # 8. below
+        mock_bbox = BoundingBox(Point(25.0, 15.0),
+                                Point(30.0, 25.0))
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 556.0, 1)
+        # 9. below-right
+        mock_bbox = BoundingBox(Point(25.0, 10.0),
+                                Point(30.0, 15.0))
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 756.8, 1)
+
+    def test_distance_to_bbox_2(self):
+        """Test calculating distance to bounding box."""
+        mock_bbox = BoundingBox(Point(5.0, 175.0),
+                                Point(15.0, -175.0))
+        # 1. inside
+        home_coordinates = [5.0, 176.0]
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 0.0, 1)
+        # 2. above-left
+        home_coordinates = [20.0, 170.0]
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 768.1, 1)
+        # 3. above-right
+        home_coordinates = [20.0, -170.0]
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 768.1, 1)
 
     def test_distance_to_unsupported_geometry(self):
         """Test calculating distance to unsupported geometry."""

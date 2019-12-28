@@ -5,7 +5,7 @@ import aiohttp
 import pytest
 
 from aio_georss_client.consts import UPDATE_OK, UPDATE_ERROR
-from aio_georss_client.xml_parser.geometry import Point, Polygon
+from aio_georss_client.xml_parser.geometry import Point, Polygon, BoundingBox
 from tests import MockGeoRssFeed
 from tests.utils import load_fixture
 
@@ -152,6 +152,33 @@ async def test_update_ok_feed_3(aresponses, event_loop):
         assert isinstance(feed_entry.geometries[1], Polygon)
         assert feed_entry.coordinates == (-31.2345, 152.789)
         assert round(abs(feed_entry.distance_to_home - 172.3), 1) == 0
+
+
+@pytest.mark.asyncio
+async def test_update_ok_feed_6(aresponses, event_loop):
+    """Test updating feed is ok."""
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=load_fixture('generic_feed_6.xml'),
+                            status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1,
+                              "http://test.url/testpath")
+        status, entries = await feed.update()
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 1
+
+        feed_entry = entries[0]
+        assert feed_entry.external_id == "1234"
+        assert len(feed_entry.geometries) == 1
+        assert isinstance(feed_entry.geometries[0], BoundingBox)
+        assert feed_entry.coordinates == (-20.9041, 168.5652)
+        assert round(abs(feed_entry.distance_to_home - 1493.3), 1) == 0
 
 
 @pytest.mark.asyncio
