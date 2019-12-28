@@ -1,13 +1,18 @@
 """GeoRSS feed item."""
+import logging
 from typing import Optional, List
 
 from aio_georss_client.consts import XML_TAG_GUID, XML_TAG_ID, XML_TAG_SOURCE, \
     XML_TAG_GEORSS_POINT, XML_TAG_GEORSS_WHERE, XML_TAG_GML_POINT, \
     XML_TAG_GML_POS, XML_TAG_GML_POLYGON, XML_TAG_GML_EXTERIOR, \
     XML_TAG_GML_LINEAR_RING, XML_TAG_GML_POS_LIST, XML_TAG_GEO_POINT, \
-    XML_TAG_GEO_LAT, XML_TAG_GEO_LONG, XML_TAG_GEORSS_POLYGON
+    XML_TAG_GEO_LAT, XML_TAG_GEO_LONG, XML_TAG_GEORSS_POLYGON, \
+    XML_TAG_GDACS_BBOX
 from aio_georss_client.xml_parser.feed_or_feed_item import FeedOrFeedItem
-from aio_georss_client.xml_parser.geometry import Geometry, Point, Polygon
+from aio_georss_client.xml_parser.geometry import Geometry, Point, Polygon, \
+    BoundingBox
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class FeedItem(FeedOrFeedItem):
@@ -41,7 +46,8 @@ class FeedItem(FeedOrFeedItem):
                       self._geometry_georss_where(),
                       self._geometry_geo_point(),
                       self._geometry_geo_long_lat(),
-                      self._geometry_georss_polygon()]:
+                      self._geometry_georss_polygon(),
+                      self._geometry_gdacs_bbox()]:
             if entry:
                 geometries.extend(entry)
         return geometries
@@ -122,6 +128,28 @@ class FeedItem(FeedOrFeedItem):
         long = self._attribute([XML_TAG_GEO_LONG])
         if long and lat:
             return [Point(lat, long)]
+        return None
+
+    def _geometry_gdacs_bbox(self) -> Optional[List[BoundingBox]]:
+        """Check for gdacs:bbox tag."""
+        # <!--gdacs: bbox format = lonmin lonmax latmin latmax -->
+        # <gdacs:bbox>164.5652 172.5652 -24.9041 -16.9041</gdacs:bbox>
+        bbox = self._attribute([XML_TAG_GDACS_BBOX])
+        if bbox:
+            if isinstance(bbox, tuple):
+                return [BoundingBox(Point(bbox[2], bbox[0]),
+                                    Point(bbox[3], bbox[1]))]
+            else:
+                bounding_boxes = []
+                for entry in bbox:
+                    if len(entry) == 4:
+                        bounding_boxes.append(BoundingBox(
+                            Point(entry[2], entry[0]),
+                            Point(entry[3], entry[1])))
+                    else:
+                        _LOGGER.warning("Insufficient data for "
+                                        "bounding box: %s", entry)
+                return bounding_boxes
         return None
 
     def _geometry_georss_polygon(self) -> Optional[List[Polygon]]:

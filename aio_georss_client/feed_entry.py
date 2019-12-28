@@ -38,7 +38,6 @@ class FeedEntry(ABC):
         # is no point then return the first entry.
         if self.geometries and len(self.geometries) >= 1:
             for entry in self.geometries:
-                print("entry = ", entry)
                 if isinstance(entry, Point):
                     return GeoRssDistanceHelper.extract_coordinates(entry)
             # No point found.
