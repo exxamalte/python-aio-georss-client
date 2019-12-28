@@ -144,11 +144,13 @@ class FeedItem(FeedOrFeedItem):
 
     @staticmethod
     def _create_bbox_single(bbox: tuple) -> List[BoundingBox]:
+        """Create single bbox from provided tuple of coordinates."""
         return [BoundingBox(Point(bbox[2], bbox[0]),
                             Point(bbox[3], bbox[1]))]
 
     @staticmethod
     def _create_bbox_multiple(bbox: list) -> List[BoundingBox]:
+        """Create multiple bboxes from provided list of coordinates."""
         bounding_boxes = []
         for entry in bbox:
             if len(entry) == 4:
@@ -199,6 +201,7 @@ class FeedItem(FeedOrFeedItem):
 
     @staticmethod
     def _create_polygon_multiple(polygon_data: list) -> List[Polygon]:
+        """Create polygon from provided list of coordinates."""
         polygons = []
         for entry in polygon_data:
             polygons.extend(FeedItem._create_polygon(entry))
