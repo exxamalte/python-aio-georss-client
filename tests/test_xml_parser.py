@@ -258,7 +258,7 @@ class TestXmlParser(unittest.TestCase):
 
         assert feed.title == "Feed Title 1"
         self.assertIsNotNone(feed.entries)
-        assert len(feed.entries) == 6
+        assert len(feed.entries) == 8
 
         feed_entry = feed.entries[0]
         assert feed_entry.title == "Title 1"
@@ -274,6 +274,31 @@ class TestXmlParser(unittest.TestCase):
         assert feed_entry.title == "Title 3"
         self.assertIsNotNone(feed_entry.geometries)
         assert len(feed_entry.geometries) == 2
+
+        feed_entry = feed.entries[3]
+        assert feed_entry.title == "Title 4"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 2
+
+        feed_entry = feed.entries[4]
+        assert feed_entry.title == "Title 5"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 3
+
+        feed_entry = feed.entries[5]
+        assert feed_entry.title == "Title 6"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 2
+
+        feed_entry = feed.entries[6]
+        assert feed_entry.title == "Title 7"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 2
+
+        feed_entry = feed.entries[7]
+        assert feed_entry.title == "Title 8"
+        self.assertIsNotNone(feed_entry.geometries)
+        assert len(feed_entry.geometries) == 1
 
     def test_byte_order_mark(self):
         """Test parsing an XML file with byte order mark."""
