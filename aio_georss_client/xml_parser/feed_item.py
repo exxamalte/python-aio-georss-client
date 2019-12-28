@@ -137,20 +137,28 @@ class FeedItem(FeedOrFeedItem):
         bbox = self._attribute([XML_TAG_GDACS_BBOX])
         if bbox:
             if isinstance(bbox, tuple):
-                return [BoundingBox(Point(bbox[2], bbox[0]),
-                                    Point(bbox[3], bbox[1]))]
+                return FeedItem._create_bbox_single(bbox)
             else:
-                bounding_boxes = []
-                for entry in bbox:
-                    if len(entry) == 4:
-                        bounding_boxes.append(BoundingBox(
-                            Point(entry[2], entry[0]),
-                            Point(entry[3], entry[1])))
-                    else:
-                        _LOGGER.warning("Insufficient data for "
-                                        "bounding box: %s", entry)
-                return bounding_boxes
+                return FeedItem._create_bbox_multiple(bbox)
         return None
+
+    @staticmethod
+    def _create_bbox_single(bbox: tuple) -> List[BoundingBox]:
+        return [BoundingBox(Point(bbox[2], bbox[0]),
+                            Point(bbox[3], bbox[1]))]
+
+    @staticmethod
+    def _create_bbox_multiple(bbox: list) -> List[BoundingBox]:
+        bounding_boxes = []
+        for entry in bbox:
+            if len(entry) == 4:
+                bounding_boxes.append(BoundingBox(
+                    Point(entry[2], entry[0]),
+                    Point(entry[3], entry[1])))
+            else:
+                _LOGGER.warning("Insufficient data for "
+                                "bounding box: %s", entry)
+        return bounding_boxes
 
     def _geometry_georss_polygon(self) -> Optional[List[Polygon]]:
         """Check for georss:polygon tag."""
@@ -173,16 +181,25 @@ class FeedItem(FeedOrFeedItem):
         if polygon_data:
             # Either tuple or an array of tuples.
             if isinstance(polygon_data, tuple):
-                if len(polygon_data) % 2 != 0:
-                    # Not even number of coordinates - chop last entry.
-                    polygon_data = polygon_data[0:len(polygon_data) - 1]
-                points = []
-                for i in range(0, len(polygon_data), 2):
-                    points.append(Point(polygon_data[i], polygon_data[i + 1]))
-                return [Polygon(points)]
+                return FeedItem._create_polygon_single(polygon_data)
             else:
-                polygons = []
-                for entry in polygon_data:
-                    polygons.extend(FeedItem._create_polygon(entry))
-                return polygons
+                return FeedItem._create_polygon_multiple(polygon_data)
         return None
+
+    @staticmethod
+    def _create_polygon_single(polygon_data: tuple) -> List[Polygon]:
+        """Create polygon from provided tuple of coordinates."""
+        if len(polygon_data) % 2 != 0:
+            # Not even number of coordinates - chop last entry.
+            polygon_data = polygon_data[0:len(polygon_data) - 1]
+        points = []
+        for i in range(0, len(polygon_data), 2):
+            points.append(Point(polygon_data[i], polygon_data[i + 1]))
+        return [Polygon(points)]
+
+    @staticmethod
+    def _create_polygon_multiple(polygon_data: list) -> List[Polygon]:
+        polygons = []
+        for entry in polygon_data:
+            polygons.extend(FeedItem._create_polygon(entry))
+        return polygons
