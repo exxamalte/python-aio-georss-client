@@ -114,6 +114,13 @@ class TestGeoRssDistanceHelper(unittest.TestCase):
         distance = GeoRssDistanceHelper.\
             distance_to_geometry(home_coordinates, mock_bbox)
         self.assertAlmostEqual(distance, 756.8, 1)
+        # special case
+        home_coordinates = [-20.0, -20.0]
+        mock_bbox = BoundingBox(Point(-30.0, -15.0),
+                                Point(-25.0, -10.0))
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_bbox)
+        self.assertAlmostEqual(distance, 756.8, 1)
 
     def test_distance_to_bbox_2(self):
         """Test calculating distance to bounding box."""
