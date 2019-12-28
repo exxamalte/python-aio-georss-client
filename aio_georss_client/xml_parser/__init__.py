@@ -47,13 +47,7 @@ class XmlParser:
             if key in KEYS_FLOAT and value:
                 return key, float(value)
             if key in KEYS_FLOAT_LIST and value:
-                # Turn white-space separated list of numbers into
-                # list of floats.
-                coordinate_values = value.split()
-                point_coordinates = []
-                for i in range(0, len(coordinate_values)):
-                    point_coordinates.append(
-                        float(coordinate_values[i]))
+                point_coordinates = XmlParser._process_coordinates(value)
                 # Return tuple of coordinates to make this conversion
                 # compatible with parsing multiple tags of the same type and
                 # combining all values into a single array.
@@ -67,21 +61,43 @@ class XmlParser:
                             key, value, error)
         return key, value
 
+    @staticmethod
+    def _process_coordinates(value):
+        """Turn white-space separated list of numbers into list of floats."""
+        coordinate_values = value.split()
+        point_coordinates = []
+        for i in range(0, len(coordinate_values)):
+            point_coordinates.append(
+                float(coordinate_values[i]))
+        return point_coordinates
+
     def parse(self, xml):
         """Parse the provided xml."""
         if xml:
-
             parsed_dict = xmltodict.parse(
                 xml, process_namespaces=True, namespaces=self._namespaces,
                 postprocessor=XmlParser.postprocessor)
-
             if XML_TAG_RSS in parsed_dict:
-                rss = parsed_dict.get(XML_TAG_RSS)
-                if XML_TAG_CHANNEL in rss:
-                    channel = rss.get(XML_TAG_CHANNEL)
-                    return Feed(channel)
+                return XmlParser._create_feed_from_rss(parsed_dict)
             if XML_TAG_FEED in parsed_dict:
-                feed = parsed_dict.get(XML_TAG_FEED)
-                return Feed(feed)
-
+                return XmlParser._create_feed_from_feed(parsed_dict)
         return None
+
+    @staticmethod
+    def _create_feed_from_rss(parsed_dict):
+        """Create feed from provided RSS data."""
+        rss = parsed_dict.get(XML_TAG_RSS)
+        if XML_TAG_CHANNEL in rss:
+            channel = rss.get(XML_TAG_CHANNEL)
+            return Feed(channel)
+        else:
+            _LOGGER.warning("Invalid structure: %s not followed by %s",
+                            XML_TAG_RSS, XML_TAG_CHANNEL)
+            return None
+
+    @staticmethod
+    def _create_feed_from_feed(parsed_dict):
+        """Create feed from provided Feed data."""
+        feed_data = parsed_dict.get(XML_TAG_FEED)
+        return Feed(feed_data)
+

@@ -70,7 +70,7 @@ class GeoRssDistanceHelper:
         return distance
 
     @staticmethod
-    def _distance_to_bounding_box(home_coordinates,
+    def _distance_to_bounding_box(home_coordinates: tuple,
                                   bbox: BoundingBox) -> float:
         """Calculate the distance between home coordinates and the bbox."""
         distance = float("inf")
@@ -87,64 +87,58 @@ class GeoRssDistanceHelper:
             # only in this case, also transpose the point's longitude
             if transposed_point_longitude < 0:
                 transposed_point_longitude += 360
+        target_point = None
         if home_coordinates[0] > bbox.top_right.latitude:
             # 1 - above-left
             if transposed_point_longitude < bbox.bottom_left.longitude:
                 # Calculate distance to top left point of bbox.
-                return GeoRssDistanceHelper._distance_to_coordinates(
-                    home_coordinates,
-                    (bbox.top_right.latitude, bbox.bottom_left.longitude))
+                target_point = (bbox.top_right.latitude,
+                                bbox.bottom_left.longitude)
             # 2 - above-centre
             if bbox.bottom_left.longitude <= transposed_point_longitude \
                     <= transposed_top_right_longitude:
                 # Calculate distance to top latitude of bbox.
-                return GeoRssDistanceHelper._distance_to_coordinates(
-                    home_coordinates,
-                    (bbox.top_right.latitude, home_coordinates[1]))
+                target_point = (bbox.top_right.latitude, home_coordinates[1])
             # 3 - above-right
             if transposed_point_longitude > transposed_top_right_longitude:
                 # Calculate distance to top right point of bbox.
-                return GeoRssDistanceHelper._distance_to_coordinates(
-                    home_coordinates,
-                    (bbox.top_right.latitude, bbox.top_right.longitude))
+                target_point = (bbox.top_right.latitude,
+                                bbox.top_right.longitude)
         if bbox.top_right.latitude >= home_coordinates[0] \
                 >= bbox.bottom_left.latitude:
             # 4 - left
             if transposed_point_longitude < bbox.bottom_left.longitude:
                 # Calculate distance to left longitude of bbox.
-                return GeoRssDistanceHelper._distance_to_coordinates(
-                    home_coordinates,
-                    (home_coordinates[0], bbox.bottom_left.longitude))
+                target_point = (home_coordinates[0],
+                                bbox.bottom_left.longitude)
             # 5 - right
             if transposed_point_longitude > transposed_top_right_longitude:
                 # Calculate distance to right longitude of bbox.
-                return GeoRssDistanceHelper._distance_to_coordinates(
-                    home_coordinates,
-                    (home_coordinates[0], bbox.top_right.longitude))
+                target_point = (home_coordinates[0], bbox.top_right.longitude)
         if home_coordinates[0] < bbox.bottom_left.latitude:
             # 6 - below-left
             if transposed_point_longitude < bbox.bottom_left.longitude:
                 # Calculate distance to bottom left point of bbox.
-                return GeoRssDistanceHelper._distance_to_coordinates(
-                    home_coordinates,
-                    (bbox.bottom_left.latitude, bbox.bottom_left.longitude))
+                target_point = (bbox.bottom_left.latitude,
+                                bbox.bottom_left.longitude)
             # 7 - below-centre
             if bbox.bottom_left.longitude <= transposed_point_longitude \
                     <= transposed_top_right_longitude:
                 # Calculate distance to bottom latitude of bbox.
-                return GeoRssDistanceHelper._distance_to_coordinates(
-                    home_coordinates,
-                    (bbox.bottom_left.latitude, home_coordinates[1]))
+                target_point = (bbox.bottom_left.latitude, home_coordinates[1])
             # 8 - below-right
             if transposed_point_longitude > transposed_top_right_longitude:
                 # Calculate distance to bottom right point of bbox.
-                return GeoRssDistanceHelper._distance_to_coordinates(
-                    home_coordinates,
-                    (bbox.bottom_left.latitude, bbox.top_right.longitude))
+                target_point = (bbox.bottom_left.latitude,
+                                bbox.top_right.longitude)
+        if target_point:
+            return GeoRssDistanceHelper._distance_to_coordinates(
+                home_coordinates,
+                target_point)
         return distance
 
     @staticmethod
-    def _distance_to_coordinates(home_coordinates, coordinates):
+    def _distance_to_coordinates(home_coordinates: tuple, coordinates: tuple):
         """Calculate the distance between home coordinates and the
         coordinates."""
         # Expecting coordinates in format: (latitude, longitude).

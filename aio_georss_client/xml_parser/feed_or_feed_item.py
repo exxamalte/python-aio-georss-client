@@ -1,6 +1,6 @@
 """GeoRSS feed or feed item."""
 import datetime
-from typing import Optional
+from typing import Optional, List
 
 from aio_georss_client.consts import XML_TAG_CATEGORY, XML_ATTR_TERM, \
     XML_TAG_PUB_DATE, XML_TAG_PUBLISHED, XML_TAG_DC_DATE, \
@@ -13,21 +13,26 @@ class FeedOrFeedItem(FeedDictSource):
     """Represents the common base of feed and its items."""
 
     @property
-    def category(self) -> Optional[list]:
+    def category(self) -> Optional[List]:
         """Return the categories of this feed item."""
         category = self._attribute([XML_TAG_CATEGORY])
         if category:
             if isinstance(category, str) or isinstance(category, dict):
                 # If it's a string or a dict, wrap in list.
                 category = [category]
-            result = []
-            for item in category:
-                if XML_ATTR_TERM in item:
-                    # <category term="Category 1"/>
-                    item = item.get(XML_ATTR_TERM)
-                result.append(item)
-            return result
+            return FeedOrFeedItem._create_categories(category)
         return None
+
+    @staticmethod
+    def _create_categories(categories: list) -> List[str]:
+        """Create categories from provided list."""
+        result = []
+        for item in categories:
+            if XML_ATTR_TERM in item:
+                # <category term="Category 1"/>
+                item = item.get(XML_ATTR_TERM)
+            result.append(item)
+        return result
 
     @property
     def published_date(self) -> Optional[datetime.datetime]:
