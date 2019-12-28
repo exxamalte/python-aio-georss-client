@@ -58,13 +58,23 @@ class FeedItem(FeedOrFeedItem):
         point = self._attribute([XML_TAG_GEORSS_POINT])
         if point:
             if isinstance(point, tuple):
-                return [Point(point[0], point[1])]
+                return FeedItem._create_georss_point_single(point)
             else:
-                points = []
-                for entry in point:
-                    points.append(Point(entry[0], entry[1]))
-                return points
+                return FeedItem._create_georss_point_multiple(point)
         return None
+
+    @staticmethod
+    def _create_georss_point_single(point: tuple) -> List[Point]:
+        """Create single point from provided coordinates."""
+        return [Point(point[0], point[1])]
+
+    @staticmethod
+    def _create_georss_point_multiple(point: list) -> List[Point]:
+        """Create multiple points from provided coordinates."""
+        points = []
+        for entry in point:
+            points.append(Point(entry[0], entry[1]))
+        return points
 
     def _geometry_georss_where(self) -> Optional[List[Geometry]]:
         """Check for georss:where tag."""
