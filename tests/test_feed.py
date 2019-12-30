@@ -182,6 +182,52 @@ async def test_update_ok_feed_6(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
+async def test_update_duplicate_geometries(aresponses, event_loop):
+    """Test updating feed is ok."""
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=load_fixture('generic_feed_7.xml'),
+                            status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+
+        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1,
+                              "http://test.url/testpath")
+        assert repr(feed) == "<MockGeoRssFeed(home=(-31.0, 151.0), " \
+                             "url=http://test.url/testpath, radius=None, " \
+                             "categories=None)>"
+        status, entries = await feed.update()
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 4
+
+        feed_entry = entries[0]
+        assert feed_entry.external_id == "1234"
+        assert len(feed_entry.geometries) == 1
+        assert isinstance(feed_entry.geometries[0], Point)
+
+        feed_entry = entries[1]
+        assert feed_entry.external_id == "2345"
+        assert len(feed_entry.geometries) == 1
+        assert isinstance(feed_entry.geometries[0], Point)
+
+        feed_entry = entries[2]
+        assert feed_entry.external_id == "3456"
+        assert len(feed_entry.geometries) == 2
+        assert isinstance(feed_entry.geometries[0], Point)
+        assert isinstance(feed_entry.geometries[1], Polygon)
+
+        feed_entry = entries[3]
+        assert feed_entry.external_id == "4567"
+        assert len(feed_entry.geometries) == 2
+        assert isinstance(feed_entry.geometries[0], Point)
+        assert isinstance(feed_entry.geometries[1], BoundingBox)
+
+
+@pytest.mark.asyncio
 async def test_update_ok_with_radius_filtering(aresponses, event_loop):
     """Test updating feed is ok."""
     aresponses.add(
