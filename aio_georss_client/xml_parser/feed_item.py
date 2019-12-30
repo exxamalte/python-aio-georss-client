@@ -50,7 +50,12 @@ class FeedItem(FeedOrFeedItem):
                       self._geometry_gdacs_bbox()]:
             if entry:
                 geometries.extend(entry)
-        return geometries
+        # Filter out any duplicates.
+        unique_geometries = []
+        for i in geometries:
+            if i not in unique_geometries:
+                unique_geometries.append(i)
+        return unique_geometries
 
     def _geometry_georss_point(self) -> Optional[List[Point]]:
         """Check for georss:point tag."""
