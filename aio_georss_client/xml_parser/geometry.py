@@ -19,6 +19,18 @@ class Point(Geometry):
         return '<{}(latitude={}, longitude={})>'.format(
             self.__class__.__name__, self.latitude, self.longitude)
 
+    def __hash__(self) -> int:
+        """Return unique hash of this"""
+        return hash((self.latitude, self.longitude))
+
+    def __eq__(self, other: object) -> bool:
+        """Return if this object is equal to other object."""
+        return (
+             self.__class__ == other.__class__ and
+             self.latitude == other.latitude and
+             self.longitude == other.longitude
+         )
+
     @property
     def latitude(self) -> Optional[float]:
         """Return the latitude of this point."""
@@ -41,6 +53,17 @@ class Polygon(Geometry):
         """Return string representation of this polygon."""
         return '<{}(centroid={})>'.format(
             self.__class__.__name__, self.centroid)
+
+    def __hash__(self) -> int:
+        """Return unique hash of this"""
+        return hash(self.points)
+
+    def __eq__(self, other: object) -> bool:
+        """Return if this object is equal to other object."""
+        return (
+             self.__class__ == other.__class__ and
+             self.points == other.points
+         )
 
     @property
     def points(self) -> Optional[list]:
@@ -73,6 +96,18 @@ class BoundingBox(Geometry):
         """Return string representation of this bounding box."""
         return '<{}(bottom_left={}, top_right={})>'.format(
             self.__class__.__name__, self._bottom_left, self._top_right)
+
+    def __hash__(self) -> int:
+        """Return unique hash of this"""
+        return hash((self.bottom_left, self.top_right))
+
+    def __eq__(self, other: object) -> bool:
+        """Return if this object is equal to other object."""
+        return (
+             self.__class__ == other.__class__ and
+             self.bottom_left == other.bottom_left and
+             self.top_right == other.top_right
+         )
 
     @property
     def bottom_left(self):
