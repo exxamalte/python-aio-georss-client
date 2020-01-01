@@ -1,5 +1,6 @@
 """GeoRSS Distance Helper."""
 import logging
+from typing import Optional
 
 from haversine import haversine
 
@@ -62,14 +63,17 @@ class GeoRssDistanceHelper:
         # Check if home is inside the polygon.
         if polygon.is_inside(Point(home_coordinates[0], home_coordinates[1])):
             return 0.0
-        # Calculate distance from polygon by calculating the distance
-        # to each point of the polygon but not to each edge of the
-        # polygon; should be good enough
+        # Calculate distance from polygon by first calculating the distance
+        # to each point of the polygon.
         for point in polygon.points:
             distance = min(distance,
                            GeoRssDistanceHelper._distance_to_coordinates(
                                home_coordinates,
                                (point.latitude, point.longitude)))
+        # Next calculate the distance to each edge of the polygon.
+        for edge in polygon.edges:
+            distance = min(distance, GeoRssDistanceHelper._distance_to_edge(
+                home_coordinates, edge))
         return distance
 
     @staticmethod
@@ -146,3 +150,36 @@ class GeoRssDistanceHelper:
         coordinates."""
         # Expecting coordinates in format: (latitude, longitude).
         return haversine(coordinates, home_coordinates)
+
+    @staticmethod
+    def _distance_to_edge(home_coordinates: tuple, edge: tuple):
+        """Calculate distance between home coordinates and provided edge."""
+        perpendicular_point = GeoRssDistanceHelper._perpendicular_point(
+            edge, Point(home_coordinates[0], home_coordinates[1]))
+        # If there is a perpendicular point on the edge -> calculate distance.
+        # If there isn't, then the distance to the end points of the edge will
+        # need to be considered separately.
+        if perpendicular_point:
+            return GeoRssDistanceHelper._distance_to_point(home_coordinates,
+                                                           perpendicular_point)
+        return float("inf")
+
+    @staticmethod
+    def _perpendicular_point(edge, point) -> Optional[Point]:
+        """Find a perpendicular point on the edge to the provided point."""
+        a, b = edge
+        px = point.longitude
+        py = point.latitude
+        ax = a.longitude
+        ay = a.latitude
+        bx = b.longitude
+        by = b.latitude
+        dx = bx - ax
+        dy = by - ay
+        shortest_length = ((dx * (px - ax)) + (dy * (py - ay))) \
+                          / ((dx * dx) + (dy * dy))
+        rx = ax + dx * shortest_length
+        ry = ay + dy * shortest_length
+        if bx >= rx >= ax and by >= ry >= ay:
+            return Point(ry, rx)
+        return None
