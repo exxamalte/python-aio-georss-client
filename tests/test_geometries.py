@@ -53,7 +53,7 @@ class TestGeometries(unittest.TestCase):
         ])
         assert polygon1 == polygon2
 
-    def test_point_in_polygon(self):
+    def test_point_in_polygon_1(self):
         """Test if point is in polygon."""
         polygon = Polygon([
             Point(30.0, 30.0),
@@ -75,6 +75,30 @@ class TestGeometries(unittest.TestCase):
         assert polygon.is_inside(point)
         # 5. Outside
         point = Point(34.0, 31.0)
+        assert not polygon.is_inside(point)
+
+    def test_point_in_polygon_2(self):
+        """Test if point is in polygon."""
+        polygon = Polygon([
+            Point(30.0, -30.0),
+            Point(30.0, -25.0),
+            Point(35.0, -25.0),
+            Point(30.0, -30.0)
+        ])
+        # 1. Outside
+        point = Point(20.0, -40.0)
+        assert not polygon.is_inside(point)
+        # 2. Inside
+        point = Point(31.0, -28.0)
+        assert polygon.is_inside(point)
+        # 3. Inside
+        point = Point(30.0, -28.0)
+        assert polygon.is_inside(point)
+        # 4. Inside
+        point = Point(30.0, -25.0)
+        assert polygon.is_inside(point)
+        # 5. Outside
+        point = Point(34.0, -29.0)
         assert not polygon.is_inside(point)
 
     def test_bounding_box_1(self):
