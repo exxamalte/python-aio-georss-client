@@ -59,6 +59,9 @@ class GeoRssDistanceHelper:
     def _distance_to_polygon(home_coordinates, polygon: Polygon) -> float:
         """Calculate the distance between home coordinates and the polygon."""
         distance = float("inf")
+        # Check if home is inside the polygon.
+        if polygon.is_inside(Point(home_coordinates[0], home_coordinates[1])):
+            return 0.0
         # Calculate distance from polygon by calculating the distance
         # to each point of the polygon but not to each edge of the
         # polygon; should be good enough
