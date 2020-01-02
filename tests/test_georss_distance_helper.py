@@ -45,8 +45,8 @@ class TestGeoRssDistanceHelper(unittest.TestCase):
             distance_to_geometry(home_coordinates, mock_point)
         self.assertAlmostEqual(distance, 146.8, 1)
 
-    def test_distance_to_polygon(self):
-        """Test calculating distance to point."""
+    def test_distance_to_polygon_1(self):
+        """Test calculating distance to polygon."""
         home_coordinates = [-31.0, 150.0]
         mock_polygon = Polygon([Point(-30.0, 151.0),
                                 Point(-30.0, 151.5),
@@ -56,6 +56,90 @@ class TestGeoRssDistanceHelper(unittest.TestCase):
         distance = GeoRssDistanceHelper.\
             distance_to_geometry(home_coordinates, mock_polygon)
         self.assertAlmostEqual(distance, 110.6, 1)
+
+    def test_distance_to_polygon_2(self):
+        """Test calculating distance to polygon."""
+        home_coordinates = [-30.2, 151.2]
+        mock_polygon = Polygon([Point(-30.0, 151.0),
+                                Point(-30.0, 151.5),
+                                Point(-30.5, 151.5),
+                                Point(-30.5, 151.0),
+                                Point(-30.0, 151.0)])
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_polygon)
+        self.assertAlmostEqual(distance, 0.0, 1)
+
+    def test_distance_to_polygon_3(self):
+        """Test calculating distance to polygon."""
+        home_coordinates = [-29.0, 151.2]
+        mock_polygon = Polygon([Point(-30.0, 151.0),
+                                Point(-30.0, 151.5),
+                                Point(-30.5, 151.5),
+                                Point(-30.5, 151.0),
+                                Point(-30.0, 151.0)])
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_polygon)
+        self.assertAlmostEqual(distance, 111.2, 1)
+
+    def test_distance_to_polygon_4(self):
+        """Test calculating distance to polygon."""
+        home_coordinates = [30.0, 151.3]
+        mock_polygon = Polygon([Point(30.0, 151.0),
+                                Point(30.0, 151.5),
+                                Point(30.5, 151.5),
+                                Point(30.5, 151.0),
+                                Point(30.0, 151.0)])
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_polygon)
+        self.assertAlmostEqual(distance, 0.0, 1)
+
+    def test_distance_to_polygon_5(self):
+        """Test calculating distance to polygon."""
+        mock_polygon = Polygon([Point(30.0, 179.0),
+                                Point(30.0, -179.5),
+                                Point(30.5, -179.5),
+                                Point(30.5, 179.0),
+                                Point(30.0, 179.0)])
+        home_coordinates = [30.2, -177.0]
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_polygon)
+        self.assertAlmostEqual(distance, 240.3, 1)
+        home_coordinates = [30.1, 178.0]
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_polygon)
+        self.assertAlmostEqual(distance, 96.2, 1)
+        home_coordinates = [31.0, -179.8]
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_polygon)
+        self.assertAlmostEqual(distance, 55.6, 1)
+        home_coordinates = [31.0, 179.8]
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_polygon)
+        self.assertAlmostEqual(distance, 55.6, 1)
+
+    def test_distance_to_polygon_6(self):
+        """Test calculating distance to polygon."""
+        mock_polygon = Polygon([Point(-30.0, 179.0),
+                                Point(-30.0, -179.5),
+                                Point(-29.5, -179.5),
+                                Point(-29.5, 179.0),
+                                Point(-30.0, 179.0)])
+        home_coordinates = [-29.8, -177.0]
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_polygon)
+        self.assertAlmostEqual(distance, 241.2, 1)
+        home_coordinates = [-29.9, 178.0]
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_polygon)
+        self.assertAlmostEqual(distance, 96.4, 1)
+        home_coordinates = [-29.0, -179.8]
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_polygon)
+        self.assertAlmostEqual(distance, 55.6, 1)
+        home_coordinates = [-29.0, 179.8]
+        distance = GeoRssDistanceHelper.\
+            distance_to_geometry(home_coordinates, mock_polygon)
+        self.assertAlmostEqual(distance, 55.6, 1)
 
     def test_distance_to_bbox_1(self):
         """Test calculating distance to bounding box."""
