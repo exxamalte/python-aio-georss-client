@@ -141,11 +141,11 @@ class GeoRssDistanceHelper:
                 target_point = (bbox.bottom_left.latitude,
                                 bbox.top_right.longitude)
         if target_point:
-            return GeoRssDistanceHelper._distance_to_coordinates(
-                home_coordinates,
-                target_point)
-        _LOGGER.debug("Distance between %s and %s: %s",
-                      home_coordinates, bbox, distance)
+            distance = GeoRssDistanceHelper._distance_to_coordinates(
+                home_coordinates, target_point)
+            _LOGGER.debug("Distance between %s and %s: %s",
+                          home_coordinates, bbox, distance)
+            return distance
         return distance
 
     @staticmethod

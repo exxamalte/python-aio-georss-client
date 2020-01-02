@@ -100,6 +100,8 @@ class TestGeometries(unittest.TestCase):
         # 5. Outside
         point = Point(34.0, -29.0)
         assert not polygon.is_inside(point)
+        # 6. Invalid point
+        assert not polygon.is_inside(None)
 
     def test_bounding_box_1(self):
         """Test bounding box."""
