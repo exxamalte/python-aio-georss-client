@@ -74,6 +74,8 @@ class GeoRssDistanceHelper:
         for edge in polygon.edges:
             distance = min(distance, GeoRssDistanceHelper._distance_to_edge(
                 home_coordinates, edge))
+        _LOGGER.debug("Distance between %s and %s: %s",
+                      home_coordinates, polygon, distance)
         return distance
 
     @staticmethod
@@ -142,6 +144,8 @@ class GeoRssDistanceHelper:
             return GeoRssDistanceHelper._distance_to_coordinates(
                 home_coordinates,
                 target_point)
+        _LOGGER.debug("Distance between %s and %s: %s",
+                      home_coordinates, bbox, distance)
         return distance
 
     @staticmethod
@@ -160,26 +164,44 @@ class GeoRssDistanceHelper:
         # If there isn't, then the distance to the end points of the edge will
         # need to be considered separately.
         if perpendicular_point:
-            return GeoRssDistanceHelper._distance_to_point(home_coordinates,
-                                                           perpendicular_point)
+            distance = GeoRssDistanceHelper._distance_to_point(
+                home_coordinates, perpendicular_point)
+            _LOGGER.debug("Distance between %s and %s: %s",
+                          home_coordinates, edge, distance)
+            return distance
         return float("inf")
 
     @staticmethod
     def _perpendicular_point(edge, point) -> Optional[Point]:
         """Find a perpendicular point on the edge to the provided point."""
         a, b = edge
+        # Safety check: a and b can't be an edge if they are the same point.
+        if a == b:
+            return None
         px = point.longitude
         py = point.latitude
         ax = a.longitude
         ay = a.latitude
         bx = b.longitude
         by = b.latitude
-        dx = bx - ax
-        dy = by - ay
+        # Alter longitude to cater for 180 degree crossings.
+        if px < 0:
+            px += 360.0
+        if ax < 0:
+            ax += 360.0
+        if bx < 0:
+            bx += 360.0
+        if ay > by or ax > bx:
+            ax, ay, bx, by = bx, by, ax, ay
+        dx = abs(bx - ax)
+        dy = abs(by - ay)
         shortest_length = ((dx * (px - ax)) + (dy * (py - ay))) \
-                          / ((dx * dx) + (dy * dy))
+            / ((dx * dx) + (dy * dy))
         rx = ax + dx * shortest_length
         ry = ay + dy * shortest_length
         if bx >= rx >= ax and by >= ry >= ay:
+            if rx > 180:
+                # Correct longitude.
+                rx -= 360.0
             return Point(ry, rx)
         return None
