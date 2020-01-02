@@ -24,6 +24,11 @@ def test_simple_feed_entry():
         r'Title (?P<custom_attribute>.+)$') is None
     assert feed_entry._search_in_description(
         r'Description (?P<custom_attribute>.+)$') is None
+    # Test _string2boolean
+    assert not feed_entry._string2boolean("False")
+    assert not feed_entry._string2boolean("no")
+    assert feed_entry._string2boolean("True")
+    assert feed_entry._string2boolean("yes")
 
 
 def test_feed_entry_search_in_attributes():

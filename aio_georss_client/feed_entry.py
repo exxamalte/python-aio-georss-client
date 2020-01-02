@@ -136,3 +136,9 @@ class FeedEntry(ABC):
             if match:
                 return match.group(CUSTOM_ATTRIBUTE)
         return None
+
+    @staticmethod
+    def _string2boolean(value: str) -> bool:
+        """Convert value to boolean."""
+        return isinstance(value, str) \
+            and value.strip().lower() in {'true', 'yes', '1'}
