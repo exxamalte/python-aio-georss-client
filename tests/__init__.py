@@ -6,12 +6,20 @@ from aio_georss_client.feed_entry import FeedEntry
 from aio_georss_client.xml_parser.feed_item import FeedItem
 
 
-class MockGeoRssFeed(GeoRssFeed):
+class MockFeedEntry(FeedEntry):
+    """Generic feed entry."""
+
+    @property
+    def attribution(self) -> Optional[str]:
+        return None
+
+
+class MockGeoRssFeed(GeoRssFeed[MockFeedEntry]):
 
     def _new_entry(self,
                    home_coordinates: Tuple[float, float],
                    rss_entry: FeedItem,
-                   global_data: Dict) -> FeedEntry:
+                   global_data: Dict) -> MockFeedEntry:
         """Generate a new entry."""
         return MockFeedEntry(home_coordinates, rss_entry)
 
@@ -29,11 +37,3 @@ class MockSimpleFeedEntry(FeedEntry):
     @property
     def external_id(self) -> Optional[str]:
         return "mock id"
-
-
-class MockFeedEntry(FeedEntry):
-    """Generic feed entry."""
-
-    @property
-    def attribution(self) -> Optional[str]:
-        return None
