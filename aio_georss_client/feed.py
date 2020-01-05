@@ -4,7 +4,7 @@ import codecs
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Generic, List, Optional, Tuple, TypeVar
 
 import aiohttp
 from aiohttp import ClientSession, client_exceptions
@@ -17,8 +17,10 @@ from .xml_parser.feed_item import FeedItem
 
 _LOGGER = logging.getLogger(__name__)
 
+T_FEED_ENTRY = TypeVar("T_FEED_ENTRY", bound=FeedEntry)
 
-class GeoRssFeed(ABC):
+
+class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
     """GeoRSS feed base class."""
 
     def __init__(self,
@@ -45,7 +47,7 @@ class GeoRssFeed(ABC):
     def _new_entry(self,
                    home_coordinates: Tuple[float, float],
                    rss_entry: FeedItem,
-                   global_data: Dict) -> FeedEntry:
+                   global_data: Dict) -> T_FEED_ENTRY:
         """Generate a new entry."""
         pass
 
@@ -57,7 +59,7 @@ class GeoRssFeed(ABC):
         """Provide additional namespaces, relevant for this feed."""
         pass
 
-    async def update(self) -> Tuple[str, Optional[List[FeedEntry]]]:
+    async def update(self) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
         """Update from external source and return filtered entries."""
         status, rss_data = await self._fetch()
         if status == UPDATE_OK:
@@ -126,7 +128,7 @@ class GeoRssFeed(ABC):
             return await response.text()
         return None
 
-    def _filter_entries(self, entries: List[FeedEntry]):
+    def _filter_entries(self, entries: List[T_FEED_ENTRY]):
         """Filter the provided entries."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
@@ -160,7 +162,7 @@ class GeoRssFeed(ABC):
         return global_data
 
     def _extract_last_timestamp(
-            self, feed_entries: List[FeedEntry]) -> Optional[datetime]:
+            self, feed_entries: List[T_FEED_ENTRY]) -> Optional[datetime]:
         """Determine latest (newest) entry from the filtered feed."""
         if feed_entries:
             dates = sorted(
