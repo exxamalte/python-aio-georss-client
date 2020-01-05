@@ -1,6 +1,6 @@
 """GeoRSS Distance Helper."""
 import logging
-from typing import Optional
+from typing import Optional, Tuple
 
 from haversine import haversine
 
@@ -17,7 +17,8 @@ class GeoRssDistanceHelper:
         pass
 
     @staticmethod
-    def extract_coordinates(geometry):
+    def extract_coordinates(geometry: Geometry) \
+            -> Optional[Tuple[float, float]]:
         """Extract the best coordinates from the feature for display."""
         latitude = longitude = None
         if isinstance(geometry, Point):
@@ -33,7 +34,8 @@ class GeoRssDistanceHelper:
         return latitude, longitude
 
     @staticmethod
-    def distance_to_geometry(home_coordinates, geometry: Geometry) -> float:
+    def distance_to_geometry(home_coordinates: Tuple[float, float],
+                             geometry: Geometry) -> float:
         """Calculate the distance between home coordinates and geometry."""
         distance = float("inf")
         if isinstance(geometry, Point):
@@ -50,14 +52,16 @@ class GeoRssDistanceHelper:
         return distance
 
     @staticmethod
-    def _distance_to_point(home_coordinates, point: Point) -> float:
+    def _distance_to_point(home_coordinates: Tuple[float, float],
+                           point: Point) -> float:
         """Calculate the distance between home coordinates and the point."""
         # Swap coordinates to match: (latitude, longitude).
         return GeoRssDistanceHelper._distance_to_coordinates(
             home_coordinates, (point.latitude, point.longitude))
 
     @staticmethod
-    def _distance_to_polygon(home_coordinates, polygon: Polygon) -> float:
+    def _distance_to_polygon(home_coordinates: Tuple[float, float],
+                             polygon: Polygon) -> float:
         """Calculate the distance between home coordinates and the polygon."""
         distance = float("inf")
         # Check if home is inside the polygon.
@@ -79,7 +83,7 @@ class GeoRssDistanceHelper:
         return distance
 
     @staticmethod
-    def _distance_to_bounding_box(home_coordinates: tuple,
+    def _distance_to_bounding_box(home_coordinates: Tuple[float, float],
                                   bbox: BoundingBox) -> float:
         """Calculate the distance between home coordinates and the bbox."""
         distance = float("inf")
@@ -149,14 +153,16 @@ class GeoRssDistanceHelper:
         return distance
 
     @staticmethod
-    def _distance_to_coordinates(home_coordinates: tuple, coordinates: tuple):
+    def _distance_to_coordinates(home_coordinates: Tuple[float, float],
+                                 coordinates: Tuple[float, float]) -> float:
         """Calculate the distance between home coordinates and the
         coordinates."""
         # Expecting coordinates in format: (latitude, longitude).
         return haversine(coordinates, home_coordinates)
 
     @staticmethod
-    def _distance_to_edge(home_coordinates: tuple, edge: tuple):
+    def _distance_to_edge(home_coordinates: Tuple[float, float],
+                          edge: Tuple[Point, Point]) -> float:
         """Calculate distance between home coordinates and provided edge."""
         perpendicular_point = GeoRssDistanceHelper._perpendicular_point(
             edge, Point(home_coordinates[0], home_coordinates[1]))
@@ -172,7 +178,8 @@ class GeoRssDistanceHelper:
         return float("inf")
 
     @staticmethod
-    def _perpendicular_point(edge, point) -> Optional[Point]:
+    def _perpendicular_point(edge: Tuple[Point, Point],
+                             point: Point) -> Optional[Point]:
         """Find a perpendicular point on the edge to the provided point."""
         a, b = edge
         # Safety check: a and b can't be an edge if they are the same point.
