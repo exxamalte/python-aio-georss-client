@@ -4,15 +4,15 @@ import codecs
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Optional, List, Tuple, Dict
+from typing import Dict, List, Optional, Tuple
 
 import aiohttp
 from aiohttp import ClientSession, client_exceptions
 
-from .consts import ATTR_ATTRIBUTION, UPDATE_OK, UPDATE_OK_NO_DATA, \
-    UPDATE_ERROR, DEFAULT_REQUEST_TIMEOUT
+from .consts import (ATTR_ATTRIBUTION, DEFAULT_REQUEST_TIMEOUT, UPDATE_ERROR,
+                     UPDATE_OK, UPDATE_OK_NO_DATA)
 from .feed_entry import FeedEntry
-from .xml_parser import XmlParser, Feed
+from .xml_parser import Feed, XmlParser
 from .xml_parser.feed_item import FeedItem
 
 _LOGGER = logging.getLogger(__name__)

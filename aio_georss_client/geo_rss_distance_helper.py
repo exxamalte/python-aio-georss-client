@@ -4,7 +4,7 @@ from typing import Optional, Tuple
 
 from haversine import haversine
 
-from .xml_parser.geometry import Point, Polygon, BoundingBox, Geometry
+from .xml_parser.geometry import BoundingBox, Geometry, Point, Polygon
 
 _LOGGER = logging.getLogger(__name__)
 
