@@ -1,4 +1,6 @@
 """XML Parser."""
+from typing import Optional, Dict
+
 import dateparser as dateparser
 import logging
 import xmltodict
@@ -71,7 +73,7 @@ class XmlParser:
                 float(coordinate_values[i]))
         return point_coordinates
 
-    def parse(self, xml):
+    def parse(self, xml) -> Optional[Feed]:
         """Parse the provided xml."""
         if xml:
             parsed_dict = xmltodict.parse(
@@ -84,7 +86,7 @@ class XmlParser:
         return None
 
     @staticmethod
-    def _create_feed_from_rss(parsed_dict):
+    def _create_feed_from_rss(parsed_dict: Dict) -> Optional[Feed]:
         """Create feed from provided RSS data."""
         rss = parsed_dict.get(XML_TAG_RSS)
         if XML_TAG_CHANNEL in rss:
@@ -96,7 +98,7 @@ class XmlParser:
             return None
 
     @staticmethod
-    def _create_feed_from_feed(parsed_dict):
+    def _create_feed_from_feed(parsed_dict: Dict) -> Feed:
         """Create feed from provided Feed data."""
         feed_data = parsed_dict.get(XML_TAG_FEED)
         return Feed(feed_data)

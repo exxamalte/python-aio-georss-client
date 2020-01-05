@@ -1,5 +1,5 @@
 """GeoRSS feed dict source."""
-from typing import Optional
+from typing import Optional, List
 
 from aio_georss_client.consts import XML_CDATA, XML_TAG_TITLE, \
     XML_TAG_DESCRIPTION, XML_TAG_SUMMARY, XML_TAG_CONTENT, XML_TAG_LINK, \
@@ -18,7 +18,7 @@ class FeedDictSource:
         return '<{}({})>'.format(
             self.__class__.__name__, self.link)
 
-    def _attribute(self, names):
+    def _attribute(self, names: List[str]) -> Optional:
         """Get an attribute from this feed or feed item."""
         if self._source and names:
             # Try each name, and return the first value that is not None.
@@ -28,7 +28,7 @@ class FeedDictSource:
                     return value
         return None
 
-    def _attribute_with_text(self, names):
+    def _attribute_with_text(self, names: List[str]) -> Optional:
         """Get an attribute with text from this feed or feed item."""
         value = self._attribute(names)
         if value and isinstance(value, dict) and XML_CDATA in value:
@@ -37,7 +37,7 @@ class FeedDictSource:
         return value
 
     @staticmethod
-    def _attribute_in_structure(obj, keys):
+    def _attribute_in_structure(obj, keys: List[str]) -> Optional:
         """Return the attribute found under the chain of keys."""
         key = keys.pop(0)
         if key in obj:
@@ -74,6 +74,6 @@ class FeedDictSource:
             link = link.get(XML_ATTR_HREF)
         return link
 
-    def get_additional_attribute(self, name):
+    def get_additional_attribute(self, name: str) -> Optional:
         """Get an additional attribute not provided as property."""
         return self._attribute([name])

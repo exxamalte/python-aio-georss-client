@@ -13,7 +13,7 @@ class FeedOrFeedItem(FeedDictSource):
     """Represents the common base of feed and its items."""
 
     @property
-    def category(self) -> Optional[List]:
+    def category(self) -> Optional[List[str]]:
         """Return the categories of this feed item."""
         category = self._attribute([XML_TAG_CATEGORY])
         if category:
