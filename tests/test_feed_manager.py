@@ -1,12 +1,13 @@
 """Test for the generic georss feed manager."""
 import datetime
-from asynctest import mock, patch, CoroutineMock
 
 import aiohttp
-import pytest
 
+import pytest
 from aio_georss_client.consts import UPDATE_OK_NO_DATA
 from aio_georss_client.feed_manager import FeedManagerBase
+from aio_georss_client.status_update import StatusUpdate
+from asynctest import CoroutineMock, mock, patch
 from tests import MockGeoRssFeed
 from tests.utils import load_fixture
 
@@ -35,15 +36,15 @@ async def test_feed_manager(aresponses, event_loop):
         updated_entity_external_ids = []
         removed_entity_external_ids = []
 
-        async def _generate_entity(external_id):
+        async def _generate_entity(external_id: str) -> None:
             """Generate new entity."""
             generated_entity_external_ids.append(external_id)
 
-        async def _update_entity(external_id):
+        async def _update_entity(external_id: str) -> None:
             """Update entity."""
             updated_entity_external_ids.append(external_id)
 
-        async def _remove_entity(external_id):
+        async def _remove_entity(external_id: str) -> None:
             """Remove entity."""
             removed_entity_external_ids.append(external_id)
 
@@ -183,15 +184,15 @@ async def test_feed_manager_no_timestamp(aresponses, event_loop):
         updated_entity_external_ids = []
         removed_entity_external_ids = []
 
-        async def _generate_entity(external_id):
+        async def _generate_entity(external_id: str) -> None:
             """Generate new entity."""
             generated_entity_external_ids.append(external_id)
 
-        async def _update_entity(external_id):
+        async def _update_entity(external_id: str) -> None:
             """Update entity."""
             updated_entity_external_ids.append(external_id)
 
-        async def _remove_entity(external_id):
+        async def _remove_entity(external_id: str) -> None:
             """Remove entity."""
             removed_entity_external_ids.append(external_id)
 
@@ -235,19 +236,19 @@ async def test_feed_manager_with_status_callback(aresponses, event_loop):
         removed_entity_external_ids = []
         status_update = []
 
-        async def _generate_entity(external_id):
+        async def _generate_entity(external_id: str) -> None:
             """Generate new entity."""
             generated_entity_external_ids.append(external_id)
 
-        async def _update_entity(external_id):
+        async def _update_entity(external_id: str) -> None:
             """Update entity."""
             updated_entity_external_ids.append(external_id)
 
-        async def _remove_entity(external_id):
+        async def _remove_entity(external_id: str) -> None:
             """Remove entity."""
             removed_entity_external_ids.append(external_id)
 
-        async def _status(status_details):
+        async def _status(status_details: StatusUpdate) -> None:
             """Capture status update details."""
             status_update.append(status_details)
 

@@ -1,13 +1,14 @@
 """Feed Entry."""
 import logging
 import re
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional, Tuple
 
-from .geo_rss_distance_helper import GeoRssDistanceHelper
 from .consts import CUSTOM_ATTRIBUTE
-from .xml_parser.geometry import Point
+from .geo_rss_distance_helper import GeoRssDistanceHelper
+from .xml_parser.feed_item import FeedItem
+from .xml_parser.geometry import Geometry, Point
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -15,7 +16,9 @@ _LOGGER = logging.getLogger(__name__)
 class FeedEntry(ABC):
     """Feed entry base class."""
 
-    def __init__(self, home_coordinates, rss_entry):
+    def __init__(self,
+                 home_coordinates: Tuple[float, float],
+                 rss_entry: FeedItem):
         """Initialise this feed entry."""
         self._home_coordinates = home_coordinates
         self._rss_entry = rss_entry
@@ -25,14 +28,14 @@ class FeedEntry(ABC):
         return '<{}(id={})>'.format(self.__class__.__name__, self.external_id)
 
     @property
-    def geometries(self):
+    def geometries(self) -> Optional[List[Geometry]]:
         """Return all geometries of this entry."""
         if self._rss_entry:
             return self._rss_entry.geometries
         return None
 
     @property
-    def coordinates(self):
+    def coordinates(self) -> Optional[Tuple[float, float]]:
         """Return the best coordinates (latitude, longitude) of this entry."""
         # This looks for the first point in the list of geometries. If there
         # is no point then return the first entry.
@@ -57,7 +60,7 @@ class FeedEntry(ABC):
             return external_id
         return None
 
-    def _search_in_external_id(self, regexp):
+    def _search_in_external_id(self, regexp) -> Optional[str]:
         """Find a sub-string in the entry's external id."""
         if self.external_id:
             match = re.search(regexp, self.external_id)
@@ -96,7 +99,7 @@ class FeedEntry(ABC):
         return None
 
     @property
-    def distance_to_home(self):
+    def distance_to_home(self) -> float:
         """Return the distance in km of this entry to the home coordinates."""
         # This goes through all geometries and reports back the closest
         # distance to any of them.

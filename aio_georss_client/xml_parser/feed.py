@@ -1,10 +1,12 @@
 """GeoRSS feed models."""
 import logging
-from typing import Optional
+from typing import List, Optional
 
-from aio_georss_client.consts import XML_TAG_ENTRY, XML_TAG_ITEM, XML_TAG_TTL, \
-    XML_TAG_LANGUAGE, XML_TAG_GENERATOR, XML_TAG_COPYRIGHT, XML_TAG_RIGHTS, \
-    XML_TAG_IMAGE, XML_TAG_DOCS, XML_TAG_SUBTITLE
+from aio_georss_client.consts import (XML_TAG_COPYRIGHT, XML_TAG_DOCS,
+                                      XML_TAG_ENTRY, XML_TAG_GENERATOR,
+                                      XML_TAG_IMAGE, XML_TAG_ITEM,
+                                      XML_TAG_LANGUAGE, XML_TAG_RIGHTS,
+                                      XML_TAG_SUBTITLE, XML_TAG_TTL)
 from aio_georss_client.xml_parser.feed_image import FeedImage
 from aio_georss_client.xml_parser.feed_item import FeedItem
 from aio_georss_client.xml_parser.feed_or_feed_item import FeedOrFeedItem
@@ -51,7 +53,7 @@ class Feed(FeedOrFeedItem):
         return self._attribute([XML_TAG_TTL])
 
     @property
-    def image(self):
+    def image(self) -> Optional[FeedImage]:
         """Return the image of this feed."""
         image = self._attribute([XML_TAG_IMAGE])
         if image:
@@ -59,7 +61,7 @@ class Feed(FeedOrFeedItem):
         return None
 
     @property
-    def entries(self):
+    def entries(self) -> List[FeedItem]:
         """Return the entries of this feed."""
         items = self._attribute([XML_TAG_ITEM, XML_TAG_ENTRY])
         entries = []

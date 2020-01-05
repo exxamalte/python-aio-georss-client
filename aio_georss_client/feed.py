@@ -4,14 +4,16 @@ import codecs
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Optional
+from typing import Dict, List, Optional, Tuple
 
 import aiohttp
 from aiohttp import ClientSession, client_exceptions
 
-from .consts import ATTR_ATTRIBUTION, UPDATE_OK, UPDATE_OK_NO_DATA, \
-    UPDATE_ERROR, DEFAULT_REQUEST_TIMEOUT
-from .xml_parser import XmlParser
+from .consts import (ATTR_ATTRIBUTION, DEFAULT_REQUEST_TIMEOUT, UPDATE_ERROR,
+                     UPDATE_OK, UPDATE_OK_NO_DATA)
+from .feed_entry import FeedEntry
+from .xml_parser import Feed, XmlParser
+from .xml_parser.feed_item import FeedItem
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -19,9 +21,12 @@ _LOGGER = logging.getLogger(__name__)
 class GeoRssFeed(ABC):
     """GeoRSS feed base class."""
 
-    def __init__(self, websession: ClientSession, home_coordinates, url: str,
+    def __init__(self,
+                 websession: ClientSession,
+                 home_coordinates: Tuple[float, float],
+                 url: str,
                  filter_radius: float = None,
-                 filter_categories=None):
+                 filter_categories: List[str] = None):
         """Initialise this service."""
         self._websession = websession
         self._home_coordinates = home_coordinates
@@ -37,7 +42,10 @@ class GeoRssFeed(ABC):
             self._filter_radius, self._filter_categories)
 
     @abstractmethod
-    def _new_entry(self, home_coordinates, rss_entry, global_data):
+    def _new_entry(self,
+                   home_coordinates: Tuple[float, float],
+                   rss_entry: FeedItem,
+                   global_data: Dict) -> FeedEntry:
         """Generate a new entry."""
         pass
 
@@ -49,15 +57,15 @@ class GeoRssFeed(ABC):
         """Provide additional namespaces, relevant for this feed."""
         pass
 
-    async def update(self):
+    async def update(self) -> Tuple[str, Optional[List[FeedEntry]]]:
         """Update from external source and return filtered entries."""
-        status, data = await self._fetch()
+        status, rss_data = await self._fetch()
         if status == UPDATE_OK:
-            if data:
+            if rss_data:
                 entries = []
-                global_data = self._extract_from_feed(data)
+                global_data = self._extract_from_feed(rss_data)
                 # Extract data from feed entries.
-                for rss_entry in data.entries:
+                for rss_entry in rss_data.entries:
                     entries.append(self._new_entry(self._home_coordinates,
                                                    rss_entry, global_data))
                 filtered_entries = self._filter_entries(entries)
@@ -74,7 +82,10 @@ class GeoRssFeed(ABC):
             # Error happened while fetching the feed.
             return UPDATE_ERROR, None
 
-    async def _fetch(self, method: str = "GET", headers=None, params=None):
+    async def _fetch(self,
+                     method: str = "GET",
+                     headers=None,
+                     params=None) -> Tuple[str, Optional[Feed]]:
         """Fetch GeoRSS data from external source."""
         try:
             timeout = aiohttp.ClientTimeout(
@@ -115,7 +126,7 @@ class GeoRssFeed(ABC):
             return await response.text()
         return None
 
-    def _filter_entries(self, entries):
+    def _filter_entries(self, entries: List[FeedEntry]):
         """Filter the provided entries."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
@@ -140,7 +151,7 @@ class GeoRssFeed(ABC):
         _LOGGER.debug("Entries after filtering %s", filtered_entries)
         return filtered_entries
 
-    def _extract_from_feed(self, feed):
+    def _extract_from_feed(self, feed: Feed) -> Dict:
         """Extract global metadata from feed."""
         global_data = {}
         author = feed.author
@@ -148,7 +159,8 @@ class GeoRssFeed(ABC):
             global_data[ATTR_ATTRIBUTION] = author
         return global_data
 
-    def _extract_last_timestamp(self, feed_entries):
+    def _extract_last_timestamp(
+            self, feed_entries: List[FeedEntry]) -> Optional[datetime]:
         """Determine latest (newest) entry from the filtered feed."""
         if feed_entries:
             dates = sorted(

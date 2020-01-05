@@ -1,14 +1,20 @@
 """XML Parser."""
-import dateparser as dateparser
 import logging
+from typing import Dict, Optional
+
+import dateparser as dateparser
 import xmltodict
 
-from aio_georss_client.consts import XML_TAG_DC_DATE, XML_TAG_LAST_BUILD_DATE, \
-    XML_TAG_PUB_DATE, XML_TAG_PUBLISHED, XML_TAG_UPDATED, XML_TAG_GEO_LAT, \
-    XML_TAG_GEO_LONG, XML_TAG_GEORSS_POLYGON, XML_TAG_GML_POS_LIST, \
-    XML_TAG_GML_POS, XML_TAG_GEORSS_POINT, XML_TAG_HEIGHT, XML_TAG_TTL, \
-    XML_TAG_WIDTH, XML_TAG_RSS, XML_TAG_CHANNEL, XML_TAG_FEED, \
-    XML_TAG_GDACS_BBOX
+from aio_georss_client.consts import (XML_TAG_CHANNEL, XML_TAG_DC_DATE,
+                                      XML_TAG_FEED, XML_TAG_GDACS_BBOX,
+                                      XML_TAG_GEO_LAT, XML_TAG_GEO_LONG,
+                                      XML_TAG_GEORSS_POINT,
+                                      XML_TAG_GEORSS_POLYGON, XML_TAG_GML_POS,
+                                      XML_TAG_GML_POS_LIST, XML_TAG_HEIGHT,
+                                      XML_TAG_LAST_BUILD_DATE,
+                                      XML_TAG_PUB_DATE, XML_TAG_PUBLISHED,
+                                      XML_TAG_RSS, XML_TAG_TTL,
+                                      XML_TAG_UPDATED, XML_TAG_WIDTH)
 from aio_georss_client.xml_parser.feed import Feed
 
 _LOGGER = logging.getLogger(__name__)
@@ -71,7 +77,7 @@ class XmlParser:
                 float(coordinate_values[i]))
         return point_coordinates
 
-    def parse(self, xml):
+    def parse(self, xml) -> Optional[Feed]:
         """Parse the provided xml."""
         if xml:
             parsed_dict = xmltodict.parse(
@@ -84,7 +90,7 @@ class XmlParser:
         return None
 
     @staticmethod
-    def _create_feed_from_rss(parsed_dict):
+    def _create_feed_from_rss(parsed_dict: Dict) -> Optional[Feed]:
         """Create feed from provided RSS data."""
         rss = parsed_dict.get(XML_TAG_RSS)
         if XML_TAG_CHANNEL in rss:
@@ -96,8 +102,7 @@ class XmlParser:
             return None
 
     @staticmethod
-    def _create_feed_from_feed(parsed_dict):
+    def _create_feed_from_feed(parsed_dict: Dict) -> Feed:
         """Create feed from provided Feed data."""
         feed_data = parsed_dict.get(XML_TAG_FEED)
         return Feed(feed_data)
-

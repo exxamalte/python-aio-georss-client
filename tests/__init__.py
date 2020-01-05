@@ -1,13 +1,17 @@
 """Tests for georss-client library."""
-from typing import Optional
+from typing import Dict, Optional, Tuple
 
 from aio_georss_client.feed import GeoRssFeed
 from aio_georss_client.feed_entry import FeedEntry
+from aio_georss_client.xml_parser.feed_item import FeedItem
 
 
 class MockGeoRssFeed(GeoRssFeed):
 
-    def _new_entry(self, home_coordinates, rss_entry, global_data):
+    def _new_entry(self,
+                   home_coordinates: Tuple[float, float],
+                   rss_entry: FeedItem,
+                   global_data: Dict) -> FeedEntry:
         """Generate a new entry."""
         return MockFeedEntry(home_coordinates, rss_entry)
 

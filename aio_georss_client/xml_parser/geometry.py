@@ -1,5 +1,5 @@
 """Geometry models."""
-from typing import Optional, List
+from typing import List, Optional, Tuple
 
 
 class Geometry:
@@ -66,12 +66,12 @@ class Polygon(Geometry):
          )
 
     @property
-    def points(self) -> Optional[list]:
+    def points(self) -> Optional[List]:
         """Return the points of this polygon."""
         return self._points
 
     @property
-    def edges(self) -> list:
+    def edges(self) -> List[Tuple[Point, Point]]:
         """Return all edges of this polygon."""
         edges = []
         for i in range(1, len(self.points)):
@@ -101,7 +101,7 @@ class Polygon(Geometry):
         return False
 
     @staticmethod
-    def _ray_crosses_segment(point, edge):
+    def _ray_crosses_segment(point: Point, edge: Tuple[Point, Point]):
         """Use ray-casting algorithm to check provided point and edge."""
         a, b = edge
         px = point.longitude
@@ -164,12 +164,12 @@ class BoundingBox(Geometry):
          )
 
     @property
-    def bottom_left(self):
+    def bottom_left(self) -> Point:
         """Return bottom left point."""
         return self._bottom_left
 
     @property
-    def top_right(self):
+    def top_right(self) -> Point:
         """Return top right point."""
         return self._top_right
 

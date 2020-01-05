@@ -1,16 +1,20 @@
 """GeoRSS feed item."""
 import logging
-from typing import Optional, List
+from typing import List, Optional, Tuple
 
-from aio_georss_client.consts import XML_TAG_GUID, XML_TAG_ID, XML_TAG_SOURCE, \
-    XML_TAG_GEORSS_POINT, XML_TAG_GEORSS_WHERE, XML_TAG_GML_POINT, \
-    XML_TAG_GML_POS, XML_TAG_GML_POLYGON, XML_TAG_GML_EXTERIOR, \
-    XML_TAG_GML_LINEAR_RING, XML_TAG_GML_POS_LIST, XML_TAG_GEO_POINT, \
-    XML_TAG_GEO_LAT, XML_TAG_GEO_LONG, XML_TAG_GEORSS_POLYGON, \
-    XML_TAG_GDACS_BBOX
+from aio_georss_client.consts import (XML_TAG_GDACS_BBOX, XML_TAG_GEO_LAT,
+                                      XML_TAG_GEO_LONG, XML_TAG_GEO_POINT,
+                                      XML_TAG_GEORSS_POINT,
+                                      XML_TAG_GEORSS_POLYGON,
+                                      XML_TAG_GEORSS_WHERE,
+                                      XML_TAG_GML_EXTERIOR,
+                                      XML_TAG_GML_LINEAR_RING,
+                                      XML_TAG_GML_POINT, XML_TAG_GML_POLYGON,
+                                      XML_TAG_GML_POS, XML_TAG_GML_POS_LIST,
+                                      XML_TAG_GUID, XML_TAG_ID, XML_TAG_SOURCE)
 from aio_georss_client.xml_parser.feed_or_feed_item import FeedOrFeedItem
-from aio_georss_client.xml_parser.geometry import Geometry, Point, Polygon, \
-    BoundingBox
+from aio_georss_client.xml_parser.geometry import (BoundingBox, Geometry,
+                                                   Point, Polygon)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -69,12 +73,12 @@ class FeedItem(FeedOrFeedItem):
         return None
 
     @staticmethod
-    def _create_georss_point_single(point: tuple) -> List[Point]:
+    def _create_georss_point_single(point: Tuple) -> List[Point]:
         """Create single point from provided coordinates."""
         return [Point(point[0], point[1])]
 
     @staticmethod
-    def _create_georss_point_multiple(point: list) -> List[Point]:
+    def _create_georss_point_multiple(point: List) -> List[Point]:
         """Create multiple points from provided coordinates."""
         points = []
         for entry in point:
@@ -158,13 +162,13 @@ class FeedItem(FeedOrFeedItem):
         return None
 
     @staticmethod
-    def _create_bbox_single(bbox: tuple) -> List[BoundingBox]:
+    def _create_bbox_single(bbox: Tuple) -> List[BoundingBox]:
         """Create single bbox from provided tuple of coordinates."""
         return [BoundingBox(Point(bbox[2], bbox[0]),
                             Point(bbox[3], bbox[1]))]
 
     @staticmethod
-    def _create_bbox_multiple(bbox: list) -> List[BoundingBox]:
+    def _create_bbox_multiple(bbox: List) -> List[BoundingBox]:
         """Create multiple bboxes from provided list of coordinates."""
         bounding_boxes = []
         for entry in bbox:
@@ -204,7 +208,7 @@ class FeedItem(FeedOrFeedItem):
         return None
 
     @staticmethod
-    def _create_polygon_single(polygon_data: tuple) -> List[Polygon]:
+    def _create_polygon_single(polygon_data: Tuple) -> List[Polygon]:
         """Create polygon from provided tuple of coordinates."""
         if len(polygon_data) % 2 != 0:
             # Not even number of coordinates - chop last entry.
@@ -215,7 +219,7 @@ class FeedItem(FeedOrFeedItem):
         return [Polygon(points)]
 
     @staticmethod
-    def _create_polygon_multiple(polygon_data: list) -> List[Polygon]:
+    def _create_polygon_multiple(polygon_data: List) -> List[Polygon]:
         """Create polygon from provided list of coordinates."""
         polygons = []
         for entry in polygon_data:

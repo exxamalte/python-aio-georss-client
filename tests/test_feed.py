@@ -2,10 +2,10 @@
 import datetime
 
 import aiohttp
-import pytest
 
-from aio_georss_client.consts import UPDATE_OK, UPDATE_ERROR
-from aio_georss_client.xml_parser.geometry import Point, Polygon, BoundingBox
+import pytest
+from aio_georss_client.consts import UPDATE_ERROR, UPDATE_OK
+from aio_georss_client.xml_parser.geometry import BoundingBox, Point, Polygon
 from tests import MockGeoRssFeed
 from tests.utils import load_fixture
 
