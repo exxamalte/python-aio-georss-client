@@ -1,7 +1,15 @@
 # Changes
 
+## 0.4 (06/01/2020)
+* Support multiple geometries per feed entry.
+* Filter out duplicate geometries.
+* Support GDACS bounding box.
+* Improved distance calculation for polygons.
+* Added conversion util for implementing libraries.
+* Improved code quality. 
+
 ## 0.3 (11/12/2019)
-* Fix GDACS XML namespace.
+* Fixes GDACS XML namespace.
 
 ## 0.2 (11/12/2019)
 * Fixes bug that prevented external source from being read correctly.

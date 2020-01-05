@@ -16,7 +16,7 @@ to [GeoRSS](http://www.georss.org/) Feeds.
 
 | Library  | Source  | Topic  |
 |----------|---------|--------|
-
+| [aio_georss_gdacs](https://github.com/exxamalte/python-aio-georss-gdacs) | Global Disaster Alert and Coordination System (GDACS) | Natural Disasters |
 
 ## Usage
 Each implementation extracts relevant information from the GeoJSON feed. Not 
