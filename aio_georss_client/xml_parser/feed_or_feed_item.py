@@ -1,11 +1,13 @@
 """GeoRSS feed or feed item."""
 import datetime
-from typing import Optional, List
+from typing import List, Optional
 
-from aio_georss_client.consts import XML_TAG_CATEGORY, XML_ATTR_TERM, \
-    XML_TAG_PUB_DATE, XML_TAG_PUBLISHED, XML_TAG_DC_DATE, \
-    XML_TAG_LAST_BUILD_DATE, XML_TAG_UPDATED, XML_TAG_MANAGING_EDITOR, \
-    XML_TAG_AUTHOR, XML_TAG_CONTRIBUTOR, XML_TAG_NAME
+from aio_georss_client.consts import (XML_ATTR_TERM, XML_TAG_AUTHOR,
+                                      XML_TAG_CATEGORY, XML_TAG_CONTRIBUTOR,
+                                      XML_TAG_DC_DATE, XML_TAG_LAST_BUILD_DATE,
+                                      XML_TAG_MANAGING_EDITOR, XML_TAG_NAME,
+                                      XML_TAG_PUB_DATE, XML_TAG_PUBLISHED,
+                                      XML_TAG_UPDATED)
 from aio_georss_client.xml_parser.feed_dict_source import FeedDictSource
 
 

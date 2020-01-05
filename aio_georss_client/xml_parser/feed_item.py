@@ -1,16 +1,20 @@
 """GeoRSS feed item."""
 import logging
-from typing import Optional, List, Tuple
+from typing import List, Optional, Tuple
 
-from aio_georss_client.consts import XML_TAG_GUID, XML_TAG_ID, XML_TAG_SOURCE, \
-    XML_TAG_GEORSS_POINT, XML_TAG_GEORSS_WHERE, XML_TAG_GML_POINT, \
-    XML_TAG_GML_POS, XML_TAG_GML_POLYGON, XML_TAG_GML_EXTERIOR, \
-    XML_TAG_GML_LINEAR_RING, XML_TAG_GML_POS_LIST, XML_TAG_GEO_POINT, \
-    XML_TAG_GEO_LAT, XML_TAG_GEO_LONG, XML_TAG_GEORSS_POLYGON, \
-    XML_TAG_GDACS_BBOX
+from aio_georss_client.consts import (XML_TAG_GDACS_BBOX, XML_TAG_GEO_LAT,
+                                      XML_TAG_GEO_LONG, XML_TAG_GEO_POINT,
+                                      XML_TAG_GEORSS_POINT,
+                                      XML_TAG_GEORSS_POLYGON,
+                                      XML_TAG_GEORSS_WHERE,
+                                      XML_TAG_GML_EXTERIOR,
+                                      XML_TAG_GML_LINEAR_RING,
+                                      XML_TAG_GML_POINT, XML_TAG_GML_POLYGON,
+                                      XML_TAG_GML_POS, XML_TAG_GML_POS_LIST,
+                                      XML_TAG_GUID, XML_TAG_ID, XML_TAG_SOURCE)
 from aio_georss_client.xml_parser.feed_or_feed_item import FeedOrFeedItem
-from aio_georss_client.xml_parser.geometry import Geometry, Point, Polygon, \
-    BoundingBox
+from aio_georss_client.xml_parser.geometry import (BoundingBox, Geometry,
+                                                   Point, Polygon)
 
 _LOGGER = logging.getLogger(__name__)
 

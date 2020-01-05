@@ -1,9 +1,10 @@
 """GeoRSS feed dict source."""
-from typing import Optional, List
+from typing import List, Optional
 
-from aio_georss_client.consts import XML_CDATA, XML_TAG_TITLE, \
-    XML_TAG_DESCRIPTION, XML_TAG_SUMMARY, XML_TAG_CONTENT, XML_TAG_LINK, \
-    XML_ATTR_HREF
+from aio_georss_client.consts import (XML_ATTR_HREF, XML_CDATA,
+                                      XML_TAG_CONTENT, XML_TAG_DESCRIPTION,
+                                      XML_TAG_LINK, XML_TAG_SUMMARY,
+                                      XML_TAG_TITLE)
 
 
 class FeedDictSource:
