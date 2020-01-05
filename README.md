@@ -6,8 +6,7 @@
 [![Version](https://img.shields.io/pypi/pyversions/aio-georss-client.svg)](https://pypi.python.org/pypi/aio-georss-client)
 [![Maintainability](https://api.codeclimate.com/v1/badges/29d6a4a8caeac24a91bd/maintainability)](https://codeclimate.com/github/exxamalte/python-aio-georss-client/maintainability)
 
-This library provides convenient async access to 
-to [GeoRSS](http://www.georss.org/) Feeds.
+This library provides convenient async access to [GeoRSS](http://www.georss.org/) Feeds.
 
 ## Installation
 `pip install aio-georss-client`
