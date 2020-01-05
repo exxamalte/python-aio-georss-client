@@ -2,7 +2,7 @@
 import datetime
 from unittest import mock
 
-from tests import MockSimpleFeedEntry, MockFeedEntry
+from tests import MockFeedEntry, MockSimpleFeedEntry
 
 
 def test_simple_feed_entry():

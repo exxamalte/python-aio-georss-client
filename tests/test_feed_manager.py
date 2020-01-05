@@ -1,13 +1,13 @@
 """Test for the generic georss feed manager."""
 import datetime
-from asynctest import mock, patch, CoroutineMock
 
 import aiohttp
-import pytest
 
+import pytest
 from aio_georss_client.consts import UPDATE_OK_NO_DATA
 from aio_georss_client.feed_manager import FeedManagerBase
 from aio_georss_client.status_update import StatusUpdate
+from asynctest import CoroutineMock, mock, patch
 from tests import MockGeoRssFeed
 from tests.utils import load_fixture
 

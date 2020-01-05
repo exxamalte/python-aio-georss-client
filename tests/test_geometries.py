@@ -1,7 +1,7 @@
 """Test geometries."""
 import unittest
 
-from aio_georss_client.xml_parser.geometry import Point, Polygon, BoundingBox
+from aio_georss_client.xml_parser.geometry import BoundingBox, Point, Polygon
 
 
 class TestGeometries(unittest.TestCase):

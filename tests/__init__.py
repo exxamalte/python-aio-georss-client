@@ -1,5 +1,5 @@
 """Tests for georss-client library."""
-from typing import Optional, Tuple, Dict
+from typing import Dict, Optional, Tuple
 
 from aio_georss_client.feed import GeoRssFeed
 from aio_georss_client.feed_entry import FeedEntry
