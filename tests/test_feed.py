@@ -301,6 +301,40 @@ async def test_update_error(aresponses, event_loop):
                               "http://test.url/badpath")
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
+        assert feed.last_timestamp is None
+
+
+@pytest.mark.asyncio
+async def test_update_ok_then_error(aresponses, event_loop):
+    """Test updating feed goes fine, followed by an error."""
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=load_fixture('generic_feed_1.xml'),
+                            status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+
+        feed = MockGeoRssFeed(websession, HOME_COORDINATES_1,
+                              "http://test.url/testpath")
+        assert repr(feed) == "<MockGeoRssFeed(home=(-31.0, 151.0), " \
+                             "url=http://test.url/testpath, radius=None, " \
+                             "categories=None)>"
+        status, entries = await feed.update()
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 5
+        assert feed.last_timestamp is not None
+
+        aresponses.add(
+            "test.url", "/testpath", "get", aresponses.Response(status=404)
+        )
+
+        status, entries = await feed.update()
+        assert status == UPDATE_ERROR
+        assert feed.last_timestamp is None
 
 
 @pytest.mark.asyncio
