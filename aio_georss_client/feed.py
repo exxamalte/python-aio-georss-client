@@ -82,6 +82,7 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
             return UPDATE_OK_NO_DATA, None
         else:
             # Error happened while fetching the feed.
+            self._last_timestamp = None
             return UPDATE_ERROR, None
 
     async def _fetch(self,
