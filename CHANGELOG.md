@@ -1,5 +1,8 @@
 # Changes
 
+## 0.5 (20/01/2020)
+* Clear last timestamp when update fails.
+
 ## 0.4 (06/01/2020)
 * Support multiple geometries per feed entry.
 * Filter out duplicate geometries.
