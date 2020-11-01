@@ -52,9 +52,6 @@ class FeedManagerBase:
         await self._store_feed_entries(status, feed_entries)
         if status == UPDATE_OK:
             _LOGGER.debug("Data retrieved %s", feed_entries)
-            # Keep a copy of all feed entries for future lookups by entities.
-            self.feed_entries = {entry.external_id: entry
-                                 for entry in feed_entries}
             # Record current time of update.
             self._last_update_successful = self._last_update
             # For entity management the external ids from the feed are used.

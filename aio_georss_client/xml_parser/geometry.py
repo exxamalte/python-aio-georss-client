@@ -90,7 +90,7 @@ class Polygon(Geometry):
         latitude = sum(latitudes_list) / number_of_points
         return Point(latitude, longitude)
 
-    def is_inside(self, point: Point) -> bool:
+    def is_inside(self, point: Optional[Point]) -> bool:
         """Check if the provided point is inside this polygon."""
         if point:
             crossings = 0

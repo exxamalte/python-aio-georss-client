@@ -5,6 +5,8 @@ from aio_georss_client.feed import GeoRssFeed
 from aio_georss_client.feed_entry import FeedEntry
 from aio_georss_client.xml_parser.feed_item import FeedItem
 
+MOCK_HOME_COORDINATES = (0.0, 0.0)
+
 
 class MockFeedEntry(FeedEntry):
     """Generic feed entry."""
@@ -30,10 +32,10 @@ class MockSimpleFeedEntry(FeedEntry):
     def attribution(self) -> Optional[str]:
         return "mock attribution"
 
-    @property
-    def title(self) -> Optional[str]:
-        return "mock title"
-
-    @property
-    def external_id(self) -> Optional[str]:
-        return "mock id"
+    # @property
+    # def title(self) -> Optional[str]:
+    #     return "mock title"
+    #
+    # @property
+    # def external_id(self) -> Optional[str]:
+    #     return "mock id"
