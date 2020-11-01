@@ -36,17 +36,17 @@ async def test_feed_manager(aresponses, event_loop):
         updated_entity_external_ids = []
         removed_entity_external_ids = []
 
-        async def _generate_entity(external_id: str) -> None:
+        async def _generate_entity(entity_external_id: str) -> None:
             """Generate new entity."""
-            generated_entity_external_ids.append(external_id)
+            generated_entity_external_ids.append(entity_external_id)
 
-        async def _update_entity(external_id: str) -> None:
+        async def _update_entity(entity_external_id: str) -> None:
             """Update entity."""
-            updated_entity_external_ids.append(external_id)
+            updated_entity_external_ids.append(entity_external_id)
 
-        async def _remove_entity(external_id: str) -> None:
+        async def _remove_entity(entity_external_id: str) -> None:
             """Remove entity."""
-            removed_entity_external_ids.append(external_id)
+            removed_entity_external_ids.append(entity_external_id)
 
         feed_manager = FeedManagerBase(
             feed,
