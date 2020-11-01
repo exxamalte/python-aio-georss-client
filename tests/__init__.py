@@ -31,11 +31,3 @@ class MockSimpleFeedEntry(FeedEntry):
     @property
     def attribution(self) -> Optional[str]:
         return "mock attribution"
-
-    # @property
-    # def title(self) -> Optional[str]:
-    #     return "mock title"
-    #
-    # @property
-    # def external_id(self) -> Optional[str]:
-    #     return "mock id"
