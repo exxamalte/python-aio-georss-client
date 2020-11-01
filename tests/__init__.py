@@ -5,6 +5,9 @@ from aio_georss_client.feed import GeoRssFeed
 from aio_georss_client.feed_entry import FeedEntry
 from aio_georss_client.xml_parser.feed_item import FeedItem
 
+MOCK_HOME_COORDINATES = (0.0, 0.0)
+MOCK_FEED_ITEM = FeedItem({})
+
 
 class MockFeedEntry(FeedEntry):
     """Generic feed entry."""
