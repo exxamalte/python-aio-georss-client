@@ -2,7 +2,9 @@
 import datetime
 from unittest import mock
 
-from tests import MockFeedEntry, MockSimpleFeedEntry, MOCK_HOME_COORDINATES
+from aio_georss_client.xml_parser.geometry import Point, BoundingBox, Polygon
+from . import MockFeedEntry, MockSimpleFeedEntry, MOCK_HOME_COORDINATES, \
+    MockFeedItem
 
 
 def test_simple_feed_entry():
@@ -29,6 +31,31 @@ def test_simple_feed_entry():
     assert not feed_entry._string2boolean("no")
     assert feed_entry._string2boolean("True")
     assert feed_entry._string2boolean("yes")
+
+
+def test_feed_entry_features():
+    """Test feed entry filtering by feature."""
+    point = Point(0.0, 0.0)
+    polygon = Polygon([point, point])
+    bounding_box = BoundingBox(point, point)
+    feed_item = MockFeedItem(None, [point, polygon, point, polygon, polygon,
+                                    bounding_box])
+    # 1. Include all
+    feed_entry = MockSimpleFeedEntry(None, feed_item, [Point, Polygon,
+                                                       BoundingBox])
+    assert len(feed_entry.geometries) == 6
+    # 2. Exclude points
+    feed_entry = MockSimpleFeedEntry(None, feed_item, [Polygon, BoundingBox])
+    assert len(feed_entry.geometries) == 4
+    # 3. Exclude polygons
+    feed_entry = MockSimpleFeedEntry(None, feed_item, [Point, BoundingBox])
+    assert len(feed_entry.geometries) == 3
+    # 4. Exclude bounding boxes
+    feed_entry = MockSimpleFeedEntry(None, feed_item, [Point, Polygon])
+    assert len(feed_entry.geometries) == 5
+    # 5. Exclude all
+    feed_entry = MockSimpleFeedEntry(None, feed_item, [])
+    assert len(feed_entry.geometries) == 0
 
 
 def test_feed_entry_search_in_attributes():
