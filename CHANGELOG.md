@@ -1,5 +1,10 @@
 # Changes
 
+## 0.6 (02/11/2020)
+* Added geometry features filter to exclude geometries from being taken into
+  account for calculating distances.
+* General code improvements.
+
 ## 0.5 (20/01/2020)
 * Clear last timestamp when update fails.
 
