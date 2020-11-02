@@ -35,6 +35,18 @@ Status Codes
   because the server indicated that there was not update since the last request.
 * _ERROR_: Something went wrong during the update
 
+## Geometry Features
+This library supports 3 different types of geometries:
+* Point
+* Polygon
+* Bounding Box
+
+By default each feed entry is using all available geometries from the external
+feed. If required however, you can exclude geometries by overriding 
+FeedEntry#features and only return the geometries you want to support in your
+specific implementation.
+
+
 ## Feed Manager
 
 The Feed Manager helps managing feed updates over time, by notifying the 

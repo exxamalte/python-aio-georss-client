@@ -3,14 +3,16 @@ import logging
 import re
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Type
 
 from .consts import CUSTOM_ATTRIBUTE
 from .geo_rss_distance_helper import GeoRssDistanceHelper
 from .xml_parser.feed_item import FeedItem
-from .xml_parser.geometry import Geometry, Point
+from .xml_parser.geometry import Geometry, Point, Polygon, BoundingBox
 
 _LOGGER = logging.getLogger(__name__)
+
+DEFAULT_FEATURES = [Point, Polygon, BoundingBox]
 
 
 class FeedEntry(ABC):
@@ -28,10 +30,17 @@ class FeedEntry(ABC):
         return '<{}(id={})>'.format(self.__class__.__name__, self.external_id)
 
     @property
+    def features(self) -> List[Type[Geometry]]:
+        """Return the list of geometry types that this feed entry supports."""
+        return DEFAULT_FEATURES
+
+    @property
     def geometries(self) -> Optional[List[Geometry]]:
         """Return all geometries of this entry."""
         if self._rss_entry:
-            return self._rss_entry.geometries
+            # Return all geometries that are of type defined in features.
+            return list(filter(lambda x: type(x) in self.features,
+                               self._rss_entry.geometries))
         return None
 
     @property
