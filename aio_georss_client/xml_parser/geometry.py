@@ -16,8 +16,9 @@ class Point(Geometry):
 
     def __repr__(self):
         """Return string representation of this point."""
-        return '<{}(latitude={}, longitude={})>'.format(
-            self.__class__.__name__, self.latitude, self.longitude)
+        return "<{}(latitude={}, longitude={})>".format(
+            self.__class__.__name__, self.latitude, self.longitude
+        )
 
     def __hash__(self) -> int:
         """Return unique hash of this"""
@@ -26,10 +27,10 @@ class Point(Geometry):
     def __eq__(self, other: object) -> bool:
         """Return if this object is equal to other object."""
         return (
-             self.__class__ == other.__class__ and
-             self.latitude == other.latitude and
-             self.longitude == other.longitude
-         )
+            self.__class__ == other.__class__
+            and self.latitude == other.latitude
+            and self.longitude == other.longitude
+        )
 
     @property
     def latitude(self) -> Optional[float]:
@@ -51,8 +52,7 @@ class Polygon(Geometry):
 
     def __repr__(self):
         """Return string representation of this polygon."""
-        return '<{}(centroid={})>'.format(
-            self.__class__.__name__, self.centroid)
+        return "<{}(centroid={})>".format(self.__class__.__name__, self.centroid)
 
     def __hash__(self) -> int:
         """Return unique hash of this"""
@@ -60,10 +60,7 @@ class Polygon(Geometry):
 
     def __eq__(self, other: object) -> bool:
         """Return if this object is equal to other object."""
-        return (
-             self.__class__ == other.__class__ and
-             self.points == other.points
-         )
+        return self.__class__ == other.__class__ and self.points == other.points
 
     @property
     def points(self) -> Optional[List]:
@@ -75,7 +72,7 @@ class Polygon(Geometry):
         """Return all edges of this polygon."""
         edges = []
         for i in range(1, len(self.points)):
-            previous = self.points[i-1]
+            previous = self.points[i - 1]
             current = self.points[i]
             edges.append((previous, current))
         return edges
@@ -148,8 +145,9 @@ class BoundingBox(Geometry):
 
     def __repr__(self):
         """Return string representation of this bounding box."""
-        return '<{}(bottom_left={}, top_right={})>'.format(
-            self.__class__.__name__, self._bottom_left, self._top_right)
+        return "<{}(bottom_left={}, top_right={})>".format(
+            self.__class__.__name__, self._bottom_left, self._top_right
+        )
 
     def __hash__(self) -> int:
         """Return unique hash of this"""
@@ -158,10 +156,10 @@ class BoundingBox(Geometry):
     def __eq__(self, other: object) -> bool:
         """Return if this object is equal to other object."""
         return (
-             self.__class__ == other.__class__ and
-             self.bottom_left == other.bottom_left and
-             self.top_right == other.top_right
-         )
+            self.__class__ == other.__class__
+            and self.bottom_left == other.bottom_left
+            and self.top_right == other.top_right
+        )
 
     @property
     def bottom_left(self) -> Point:
@@ -180,8 +178,7 @@ class BoundingBox(Geometry):
         if self._bottom_left.longitude > self._top_right.longitude:
             # bounding box spans across 180 degree longitude
             transposed_top_right_longitude = self._top_right.longitude + 360
-        longitude = (self._bottom_left.longitude
-                     + transposed_top_right_longitude) / 2
+        longitude = (self._bottom_left.longitude + transposed_top_right_longitude) / 2
         latitude = (self._bottom_left.latitude + self._top_right.latitude) / 2
         return Point(latitude, longitude)
 
@@ -192,11 +189,13 @@ class BoundingBox(Geometry):
             transposed_top_right_longitude = self._top_right.longitude
             if self._bottom_left.longitude > self._top_right.longitude:
                 # bounding box spans across 180 degree longitude
-                transposed_top_right_longitude = self._top_right.longitude \
-                                                 + 360
+                transposed_top_right_longitude = self._top_right.longitude + 360
                 if point.longitude < 0:
                     transposed_point_longitude += 360
-            return (self._bottom_left.latitude <= point.latitude
-                    <= self._top_right.latitude) and \
-                   (self._bottom_left.longitude <= transposed_point_longitude
-                    <= transposed_top_right_longitude)
+            return (
+                self._bottom_left.latitude <= point.latitude <= self._top_right.latitude
+            ) and (
+                self._bottom_left.longitude
+                <= transposed_point_longitude
+                <= transposed_top_right_longitude
+            )

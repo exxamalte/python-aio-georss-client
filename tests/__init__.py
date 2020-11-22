@@ -18,20 +18,23 @@ class MockFeedEntry(FeedEntry):
 
 
 class MockGeoRssFeed(GeoRssFeed[MockFeedEntry]):
-
-    def _new_entry(self,
-                   home_coordinates: Tuple[float, float],
-                   rss_entry: FeedItem,
-                   global_data: Dict) -> MockFeedEntry:
+    def _new_entry(
+        self,
+        home_coordinates: Tuple[float, float],
+        rss_entry: FeedItem,
+        global_data: Dict,
+    ) -> MockFeedEntry:
         """Generate a new entry."""
         return MockFeedEntry(home_coordinates, rss_entry)
 
 
 class MockSimpleFeedEntry(FeedEntry):
-
-    def __init__(self, home_coordinates: Tuple[float, float],
-                 rss_entry: FeedItem,
-                 features: List[Type[Geometry]] = DEFAULT_FEATURES):
+    def __init__(
+        self,
+        home_coordinates: Tuple[float, float],
+        rss_entry: FeedItem,
+        features: List[Type[Geometry]] = DEFAULT_FEATURES,
+    ):
         super().__init__(home_coordinates, rss_entry)
         self._features = features
 
@@ -45,7 +48,6 @@ class MockSimpleFeedEntry(FeedEntry):
 
 
 class MockFeedItem(FeedItem):
-
     def __init__(self, source, geometries):
         super().__init__(source)
         self._geometries = geometries
