@@ -8,7 +8,7 @@ from typing import List, Optional, Tuple, Type
 from .consts import CUSTOM_ATTRIBUTE
 from .geo_rss_distance_helper import GeoRssDistanceHelper
 from .xml_parser.feed_item import FeedItem
-from .xml_parser.geometry import Geometry, Point, Polygon, BoundingBox
+from .xml_parser.geometry import BoundingBox, Geometry, Point, Polygon
 
 _LOGGER = logging.getLogger(__name__)
 
