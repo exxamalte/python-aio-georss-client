@@ -2,19 +2,26 @@
 import logging
 from typing import List, Optional, Tuple
 
-from aio_georss_client.consts import (XML_TAG_GDACS_BBOX, XML_TAG_GEO_LAT,
-                                      XML_TAG_GEO_LONG, XML_TAG_GEO_POINT,
-                                      XML_TAG_GEORSS_POINT,
-                                      XML_TAG_GEORSS_POLYGON,
-                                      XML_TAG_GEORSS_WHERE,
-                                      XML_TAG_GML_EXTERIOR,
-                                      XML_TAG_GML_LINEAR_RING,
-                                      XML_TAG_GML_POINT, XML_TAG_GML_POLYGON,
-                                      XML_TAG_GML_POS, XML_TAG_GML_POS_LIST,
-                                      XML_TAG_GUID, XML_TAG_ID, XML_TAG_SOURCE)
+from aio_georss_client.consts import (
+    XML_TAG_GDACS_BBOX,
+    XML_TAG_GEO_LAT,
+    XML_TAG_GEO_LONG,
+    XML_TAG_GEO_POINT,
+    XML_TAG_GEORSS_POINT,
+    XML_TAG_GEORSS_POLYGON,
+    XML_TAG_GEORSS_WHERE,
+    XML_TAG_GML_EXTERIOR,
+    XML_TAG_GML_LINEAR_RING,
+    XML_TAG_GML_POINT,
+    XML_TAG_GML_POLYGON,
+    XML_TAG_GML_POS,
+    XML_TAG_GML_POS_LIST,
+    XML_TAG_GUID,
+    XML_TAG_ID,
+    XML_TAG_SOURCE,
+)
 from aio_georss_client.xml_parser.feed_or_feed_item import FeedOrFeedItem
-from aio_georss_client.xml_parser.geometry import (BoundingBox, Geometry,
-                                                   Point, Polygon)
+from aio_georss_client.xml_parser.geometry import BoundingBox, Geometry, Point, Polygon
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,8 +31,7 @@ class FeedItem(FeedOrFeedItem):
 
     def __repr__(self):
         """Return string representation of this feed item."""
-        return '<{}({})>'.format(
-            self.__class__.__name__, self.guid)
+        return "<{}({})>".format(self.__class__.__name__, self.guid)
 
     @property
     def guid(self) -> Optional[str]:
@@ -46,12 +52,14 @@ class FeedItem(FeedOrFeedItem):
     def geometries(self) -> Optional[List[Geometry]]:
         """Return all geometries of this feed item."""
         geometries = []
-        for entry in [self._geometry_georss_point(),
-                      self._geometry_georss_where(),
-                      self._geometry_geo_point(),
-                      self._geometry_geo_long_lat(),
-                      self._geometry_georss_polygon(),
-                      self._geometry_gdacs_bbox()]:
+        for entry in [
+            self._geometry_georss_point(),
+            self._geometry_georss_where(),
+            self._geometry_geo_point(),
+            self._geometry_geo_long_lat(),
+            self._geometry_georss_polygon(),
+            self._geometry_gdacs_bbox(),
+        ]:
             if entry:
                 geometries.extend(entry)
         # Filter out any duplicates.
@@ -96,7 +104,8 @@ class FeedItem(FeedOrFeedItem):
             #   </gml:Point>
             # </georss:where>
             pos = self._attribute_in_structure(
-                where, [XML_TAG_GML_POINT, XML_TAG_GML_POS])
+                where, [XML_TAG_GML_POINT, XML_TAG_GML_POS]
+            )
             if pos:
                 return [Point(pos[0], pos[1])]
             # Polygon:
@@ -119,8 +128,14 @@ class FeedItem(FeedOrFeedItem):
             #   </gml:Polygon>
             # </georss:where>
             pos_list = self._attribute_in_structure(
-                where, [XML_TAG_GML_POLYGON, XML_TAG_GML_EXTERIOR,
-                        XML_TAG_GML_LINEAR_RING, XML_TAG_GML_POS_LIST])
+                where,
+                [
+                    XML_TAG_GML_POLYGON,
+                    XML_TAG_GML_EXTERIOR,
+                    XML_TAG_GML_LINEAR_RING,
+                    XML_TAG_GML_POS_LIST,
+                ],
+            )
             if pos_list:
                 return self._create_polygon(pos_list)
         return None
@@ -164,8 +179,7 @@ class FeedItem(FeedOrFeedItem):
     @staticmethod
     def _create_bbox_single(bbox: Tuple) -> List[BoundingBox]:
         """Create single bbox from provided tuple of coordinates."""
-        return [BoundingBox(Point(bbox[2], bbox[0]),
-                            Point(bbox[3], bbox[1]))]
+        return [BoundingBox(Point(bbox[2], bbox[0]), Point(bbox[3], bbox[1]))]
 
     @staticmethod
     def _create_bbox_multiple(bbox: List) -> List[BoundingBox]:
@@ -173,12 +187,11 @@ class FeedItem(FeedOrFeedItem):
         bounding_boxes = []
         for entry in bbox:
             if len(entry) == 4:
-                bounding_boxes.append(BoundingBox(
-                    Point(entry[2], entry[0]),
-                    Point(entry[3], entry[1])))
+                bounding_boxes.append(
+                    BoundingBox(Point(entry[2], entry[0]), Point(entry[3], entry[1]))
+                )
             else:
-                _LOGGER.warning("Insufficient data for "
-                                "bounding box: %s", entry)
+                _LOGGER.warning("Insufficient data for " "bounding box: %s", entry)
         return bounding_boxes
 
     def _geometry_georss_polygon(self) -> Optional[List[Polygon]]:
@@ -212,7 +225,7 @@ class FeedItem(FeedOrFeedItem):
         """Create polygon from provided tuple of coordinates."""
         if len(polygon_data) % 2 != 0:
             # Not even number of coordinates - chop last entry.
-            polygon_data = polygon_data[0:len(polygon_data) - 1]
+            polygon_data = polygon_data[0 : len(polygon_data) - 1]
         points = []
         for i in range(0, len(polygon_data), 2):
             points.append(Point(polygon_data[i], polygon_data[i + 1]))

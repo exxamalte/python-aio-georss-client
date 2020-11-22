@@ -18,16 +18,14 @@ DEFAULT_FEATURES = [Point, Polygon, BoundingBox]
 class FeedEntry(ABC):
     """Feed entry base class."""
 
-    def __init__(self,
-                 home_coordinates: Tuple[float, float],
-                 rss_entry: FeedItem):
+    def __init__(self, home_coordinates: Tuple[float, float], rss_entry: FeedItem):
         """Initialise this feed entry."""
         self._home_coordinates = home_coordinates
         self._rss_entry = rss_entry
 
     def __repr__(self):
         """Return string representation of this entry."""
-        return '<{}(id={})>'.format(self.__class__.__name__, self.external_id)
+        return "<{}(id={})>".format(self.__class__.__name__, self.external_id)
 
     @property
     def features(self) -> List[Type[Geometry]]:
@@ -39,8 +37,9 @@ class FeedEntry(ABC):
         """Return all geometries of this entry."""
         if self._rss_entry:
             # Return all geometries that are of type defined in features.
-            return list(filter(lambda x: type(x) in self.features,
-                               self._rss_entry.geometries))
+            return list(
+                filter(lambda x: type(x) in self.features, self._rss_entry.geometries)
+            )
         return None
 
     @property
@@ -95,8 +94,11 @@ class FeedEntry(ABC):
     @property
     def category(self) -> Optional[str]:
         """Return the category of this entry."""
-        if self._rss_entry and self._rss_entry.category \
-                and isinstance(self._rss_entry.category, list):
+        if (
+            self._rss_entry
+            and self._rss_entry.category
+            and isinstance(self._rss_entry.category, list)
+        ):
             # To keep this simple, just return the first category.
             return self._rss_entry.category[0]
         return None
@@ -115,9 +117,12 @@ class FeedEntry(ABC):
         distance = float("inf")
         if self.geometries and len(self.geometries) >= 1:
             for geometry in self.geometries:
-                distance = min(distance,
-                               GeoRssDistanceHelper.distance_to_geometry(
-                                   self._home_coordinates, geometry))
+                distance = min(
+                    distance,
+                    GeoRssDistanceHelper.distance_to_geometry(
+                        self._home_coordinates, geometry
+                    ),
+                )
         return distance
 
     @property
@@ -152,5 +157,4 @@ class FeedEntry(ABC):
     @staticmethod
     def _string2boolean(value: str) -> bool:
         """Convert value to boolean."""
-        return isinstance(value, str) \
-            and value.strip().lower() in {'true', 'yes', '1'}
+        return isinstance(value, str) and value.strip().lower() in {"true", "yes", "1"}
