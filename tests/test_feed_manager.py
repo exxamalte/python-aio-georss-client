@@ -2,12 +2,12 @@
 import datetime
 
 import aiohttp
-
 import pytest
+from asynctest import CoroutineMock, mock, patch
+
 from aio_georss_client.consts import UPDATE_OK_NO_DATA
 from aio_georss_client.feed_manager import FeedManagerBase
 from aio_georss_client.status_update import StatusUpdate
-from asynctest import CoroutineMock, mock, patch
 from tests import MockGeoRssFeed
 from tests.utils import load_fixture
 

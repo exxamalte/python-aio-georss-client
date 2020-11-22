@@ -2,8 +2,9 @@
 import datetime
 from unittest import mock
 
-from aio_georss_client.xml_parser.geometry import Point, BoundingBox, Polygon
-from . import MockFeedEntry, MockSimpleFeedEntry, MOCK_HOME_COORDINATES, MockFeedItem
+from aio_georss_client.xml_parser.geometry import BoundingBox, Point, Polygon
+
+from . import MOCK_HOME_COORDINATES, MockFeedEntry, MockFeedItem, MockSimpleFeedEntry
 
 
 def test_simple_feed_entry():

@@ -1,6 +1,7 @@
 """Tests for XML parser."""
 import datetime
 import unittest
+
 from pyexpat import ExpatError
 
 from aio_georss_client.xml_parser import XmlParser
