@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Tuple, Type
 from aio_georss_client.feed import GeoRssFeed
 from aio_georss_client.feed_entry import DEFAULT_FEATURES, FeedEntry
 from aio_georss_client.xml_parser.feed_item import FeedItem
-from aio_georss_client.xml_parser.geometry import BoundingBox, Geometry, Point
+from aio_georss_client.xml_parser.geometry import Geometry
 
 MOCK_HOME_COORDINATES = (0.0, 0.0)
 
