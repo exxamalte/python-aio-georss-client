@@ -1,5 +1,8 @@
 # Changes
 
+## 0.7 (31/12/2020)
+* Add non-standard namespace used by [EMSC feed](https://www.emsc-csem.org/service/rss/rss.php).
+
 ## 0.6 (02/11/2020)
 * Added geometry features filter to exclude geometries from being taken into
   account for calculating distances.
