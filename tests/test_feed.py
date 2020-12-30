@@ -230,6 +230,34 @@ async def test_update_duplicate_geometries(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
+async def test_update_ok_feed_8(aresponses, event_loop):
+    """Test updating feed is ok."""
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=load_fixture("generic_feed_8.xml"), status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+
+        feed = MockGeoRssFeed(
+            websession, HOME_COORDINATES_1, "http://test.url/testpath"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 1
+
+        feed_entry = entries[0]
+        assert feed_entry.title == "Title 1"
+        assert feed_entry.external_id == "1234"
+        assert feed_entry.category == "Category 1"
+        assert feed_entry.coordinates == (-37.2345, 149.1234)
+        assert round(abs(feed_entry.distance_to_home - 714.4), 1) == 0
+
+
+@pytest.mark.asyncio
 async def test_update_ok_with_radius_filtering(aresponses, event_loop):
     """Test updating feed is ok."""
     aresponses.add(
