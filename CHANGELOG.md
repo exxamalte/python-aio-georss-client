@@ -1,5 +1,9 @@
 # Changes
 
+## 0.8 (09/06/2021)
+* Add license tag (thanks @fabaff).
+* Set aiohttp to a release 3.7.4 or later (thanks @fabaff).
+
 ## 0.7 (31/12/2020)
 * Add non-standard namespace used by [EMSC feed](https://www.emsc-csem.org/service/rss/rss.php).
 
