@@ -1,7 +1,7 @@
 # python-aio-georss-client
 
-[![Build Status](https://travis-ci.org/exxamalte/python-aio-georss-client.svg)](https://travis-ci.org/exxamalte/python-aio-georss-client)
-[![Coverage Status](https://coveralls.io/repos/github/exxamalte/python-aio-georss-client/badge.svg?branch=master)](https://coveralls.io/github/exxamalte/python-aio-georss-client?branch=master)
+[![Build Status](https://github.com/exxamalte/python-aio-georss-client/workflows/CI/badge.svg?branch=master)](https://github.com/exxamalte/python-aio-georss-client/actions?workflow=CI)
+[![codecov](https://codecov.io/gh/exxamalte/python-aio-georss-client/branch/master/graph/badge.svg?token=JHET53MLPC)](https://codecov.io/gh/exxamalte/python-aio-georss-client)
 [![PyPi](https://img.shields.io/pypi/v/aio-georss-client.svg)](https://pypi.python.org/pypi/aio-georss-client)
 [![Version](https://img.shields.io/pypi/pyversions/aio-georss-client.svg)](https://pypi.python.org/pypi/aio-georss-client)
 [![Maintainability](https://api.codeclimate.com/v1/badges/29d6a4a8caeac24a91bd/maintainability)](https://codeclimate.com/github/exxamalte/python-aio-georss-client/maintainability)
