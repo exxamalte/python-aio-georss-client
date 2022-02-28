@@ -6,6 +6,7 @@ import dateparser as dateparser
 import xmltodict
 
 from aio_georss_client.consts import (
+    NAMESPACE_SEPARATOR,
     XML_TAG_CHANNEL,
     XML_TAG_DC_DATE,
     XML_TAG_FEED,
@@ -103,6 +104,7 @@ class XmlParser:
                 xml,
                 process_namespaces=True,
                 namespaces=self._namespaces,
+                namespace_separator=NAMESPACE_SEPARATOR,
                 postprocessor=XmlParser.postprocessor,
             )
             if XML_TAG_RSS in parsed_dict:
