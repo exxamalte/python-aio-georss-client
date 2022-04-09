@@ -8,6 +8,7 @@ from typing import Dict, Generic, List, Optional, Tuple, TypeVar
 
 import aiohttp
 from aiohttp import ClientSession, client_exceptions
+from pyexpat import ExpatError
 
 from .consts import (
     ATTR_ATTRIBUTION,
@@ -120,16 +121,21 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
                         "Fetching data from %s failed with %s", self._url, client_error
                     )
                     return UPDATE_ERROR, None
+                except ExpatError as expat_error:
+                    _LOGGER.warning(
+                        "Parsing data from %s failed with %s", self._url, expat_error
+                    )
+                    return UPDATE_OK_NO_DATA, None
         except client_exceptions.ClientError as client_error:
             _LOGGER.warning(
-                "Requesting data from %s failed with " "client error: %s",
+                "Requesting data from %s failed with client error: %s",
                 self._url,
                 client_error,
             )
             return UPDATE_ERROR, None
         except asyncio.TimeoutError:
             _LOGGER.warning(
-                "Requesting data from %s failed with " "timeout error", self._url
+                "Requesting data from %s failed with timeout error", self._url
             )
             return UPDATE_ERROR, None
 
