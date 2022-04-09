@@ -4,7 +4,7 @@ import datetime
 import aiohttp
 import pytest
 
-from aio_georss_client.consts import UPDATE_ERROR, UPDATE_OK
+from aio_georss_client.consts import UPDATE_ERROR, UPDATE_OK, UPDATE_OK_NO_DATA
 from aio_georss_client.xml_parser.geometry import BoundingBox, Point, Polygon
 from tests import MockGeoRssFeed
 from tests.utils import load_fixture
@@ -413,3 +413,31 @@ async def test_update_bom(aresponses, event_loop):
         assert status == UPDATE_OK
         assert entries is not None
         assert len(entries) == 0
+
+
+@pytest.mark.asyncio
+async def test_update_not_xml(aresponses, event_loop):
+    """Test updating feed where returned payload is not XML."""
+    # During tests it turned out that occasionally the GDACS server appears to return
+    # invalid payload (00 control characters) which results in an exception thrown:
+    # ExpatError: not well-formed (invalid token): line 1, column 0
+    not_xml = "\x00\x00\x00"
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=not_xml, status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+        feed = MockGeoRssFeed(
+            websession, HOME_COORDINATES_1, "http://test.url/testpath"
+        )
+        assert (
+            repr(feed) == "<MockGeoRssFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/testpath, radius=None, "
+            "categories=None)>"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_OK_NO_DATA
+        assert entries is None
