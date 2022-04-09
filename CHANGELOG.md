@@ -1,5 +1,8 @@
 # Changes
 
+## 0.10 (09/04/2022)
+* Improve error handling where the GeoRSS feed provides invalid XML.
+
 ## 0.9 (18/02/2022)
 * No functional changes.
 * Added Python 3.10 support.
