@@ -2,6 +2,7 @@
 import logging
 from typing import Dict, Optional
 
+import ciso8601
 import dateparser as dateparser
 import xmltodict
 
@@ -56,6 +57,14 @@ KEYS_FLOAT_LIST = [
 KEYS_INT = [XML_TAG_HEIGHT, XML_TAG_TTL, XML_TAG_WIDTH]
 
 
+def _parse_date(value):
+    """Parse date with ciso8601 or fallback to slower dateparser."""
+    try:
+        return ciso8601.parse_datetime(value)
+    except ValueError:
+        return dateparser.parse(value)
+
+
 class XmlParser:
     """Built-in XML parser."""
 
@@ -70,7 +79,7 @@ class XmlParser:
         """Conduct type conversion for selected keys."""
         try:
             if key in KEYS_DATE and value:
-                return key, dateparser.parse(value)
+                return key, _parse_date(value)
             if key in KEYS_FLOAT and value:
                 return key, float(value)
             if key in KEYS_FLOAT_LIST and value:

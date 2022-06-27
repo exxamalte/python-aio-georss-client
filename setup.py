@@ -13,6 +13,7 @@ REQUIRES = [
     "haversine>=1.0.1",
     "xmltodict>=0.12.0",
     "dateparser>=0.7.0",
+    "ciso8601>=2.2.0",
 ]
 
 

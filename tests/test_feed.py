@@ -281,6 +281,12 @@ async def test_update_ok_with_radius_filtering(aresponses, event_loop):
         assert round(abs(entries[0].distance_to_home - 82.0), 1) == 0
         assert round(abs(entries[1].distance_to_home - 77.0), 1) == 0
         assert round(abs(entries[2].distance_to_home - 84.6), 1) == 0
+        assert entries[0].updated == datetime.datetime(2018, 9, 23, 8, 35)
+        assert entries[1].updated == datetime.datetime(2018, 9, 23, 8, 45)
+        assert entries[2].updated == datetime.datetime(2018, 9, 23, 8, 55)
+        assert entries[0].published == datetime.datetime(2018, 9, 23, 8, 30)
+        assert entries[1].published == datetime.datetime(2018, 9, 23, 8, 40)
+        assert entries[2].published == datetime.datetime(2018, 9, 23, 8, 50)
 
 
 @pytest.mark.asyncio
