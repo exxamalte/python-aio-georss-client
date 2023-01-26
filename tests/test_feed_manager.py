@@ -2,8 +2,8 @@
 import datetime
 
 import aiohttp
+import mock as async_mock
 import pytest
-from asynctest import CoroutineMock, patch
 
 from aio_georss_client.consts import UPDATE_OK_NO_DATA
 from aio_georss_client.feed_manager import FeedManagerBase
@@ -127,8 +127,9 @@ async def test_feed_manager(aresponses, event_loop):
         updated_entity_external_ids.clear()
         removed_entity_external_ids.clear()
 
-        with patch(
-            "aio_georss_client.feed.GeoRssFeed._fetch", new_callable=CoroutineMock
+        with async_mock.patch(
+            "aio_georss_client.feed.GeoRssFeed._fetch",
+            new_callable=async_mock.AsyncMock,
         ) as mock_fetch:
             mock_fetch.return_value = (UPDATE_OK_NO_DATA, None)
 
