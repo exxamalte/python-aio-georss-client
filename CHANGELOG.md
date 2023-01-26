@@ -1,5 +1,10 @@
 # Changes
 
+## 0.11 (26/01/2023)
+* Added Python 3.11 support.
+* Removed deprecated asynctest.
+* Bumped library versions: black, haversine, dateparser, xmltodict.
+
 ## 0.10 (09/04/2022)
 * Improve error handling where the GeoRSS feed provides invalid XML.
 
