@@ -1,5 +1,7 @@
 """Tests for base classes."""
+import asyncio
 import datetime
+from http import HTTPStatus
 
 import aiohttp
 import pytest
@@ -14,17 +16,15 @@ HOME_COORDINATES_2 = (-37.0, 150.0)
 
 
 @pytest.mark.asyncio
-async def test_update_ok(aresponses, event_loop):
+async def test_update_ok(mock_aioresponse):
     """Test updating feed is ok."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_1.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_1.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -68,17 +68,15 @@ async def test_update_ok(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_feed_2(aresponses, event_loop):
+async def test_update_ok_feed_2(mock_aioresponse):
     """Test updating feed is ok."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_2.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_2.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -96,16 +94,15 @@ async def test_update_ok_feed_2(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_feed_3(aresponses, event_loop):
+async def test_update_ok_feed_3(mock_aioresponse):
     """Test updating feed is ok."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_3.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_3.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -155,16 +152,15 @@ async def test_update_ok_feed_3(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_feed_6(aresponses, event_loop):
+async def test_update_ok_feed_6(mock_aioresponse):
     """Test updating feed is ok."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_6.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_6.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -182,17 +178,15 @@ async def test_update_ok_feed_6(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_duplicate_geometries(aresponses, event_loop):
+async def test_update_duplicate_geometries(mock_aioresponse):
     """Test updating feed is ok."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_7.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_7.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -230,17 +224,15 @@ async def test_update_duplicate_geometries(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_feed_8(aresponses, event_loop):
+async def test_update_ok_feed_8(mock_aioresponse):
     """Test updating feed is ok."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_8.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_8.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -258,16 +250,15 @@ async def test_update_ok_feed_8(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_radius_filtering(aresponses, event_loop):
+async def test_update_ok_with_radius_filtering(mock_aioresponse):
     """Test updating feed is ok."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_1.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_1.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession,
             HOME_COORDINATES_2,
@@ -284,16 +275,15 @@ async def test_update_ok_with_radius_filtering(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_radius_and_category_filtering(aresponses, event_loop):
+async def test_update_ok_with_radius_and_category_filtering(mock_aioresponse):
     """Test updating feed is ok."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_1.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_1.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession,
             HOME_COORDINATES_2,
@@ -307,11 +297,10 @@ async def test_update_ok_with_radius_and_category_filtering(aresponses, event_lo
         assert len(entries) == 1
         assert round(abs(entries[0].distance_to_home - 77.0), 1) == 0
 
-        aresponses.add(
-            "test.url",
-            "/testpath",
-            "get",
-            aresponses.Response(text=load_fixture("generic_feed_1.xml"), status=200),
+        mock_aioresponse.get(
+            "http://test.url/testpath",
+            status=HTTPStatus.OK,
+            body=load_fixture("generic_feed_1.xml"),
         )
 
         feed = MockGeoRssFeed(
@@ -328,11 +317,14 @@ async def test_update_ok_with_radius_and_category_filtering(aresponses, event_lo
 
 
 @pytest.mark.asyncio
-async def test_update_error(aresponses, event_loop):
+async def test_update_error(mock_aioresponse):
     """Test updating feed results in error."""
-    aresponses.add("test.url", "/badpath", "get", aresponses.Response(status=404))
+    mock_aioresponse.get(
+        "http://test.url/badpath",
+        status=HTTPStatus.NOT_FOUND,
+    )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(websession, HOME_COORDINATES_1, "http://test.url/badpath")
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
@@ -340,17 +332,15 @@ async def test_update_error(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_then_error(aresponses, event_loop):
+async def test_update_ok_then_error(mock_aioresponse):
     """Test updating feed goes fine, followed by an error."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_1.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_1.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -365,7 +355,10 @@ async def test_update_ok_then_error(aresponses, event_loop):
         assert len(entries) == 5
         assert feed.last_timestamp is not None
 
-        aresponses.add("test.url", "/testpath", "get", aresponses.Response(status=404))
+        mock_aioresponse.get(
+            "http://test.url/testpath",
+            status=HTTPStatus.NOT_FOUND,
+        )
 
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
@@ -373,11 +366,14 @@ async def test_update_ok_then_error(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_with_request_exception(aresponses, event_loop):
+async def test_update_with_request_exception(mock_aioresponse):
     """Test updating feed raises exception."""
-    aresponses.add("test.url", "/badpath", "get", aresponses.Response(status=404))
+    mock_aioresponse.get(
+        "http://test.url/badpath",
+        status=HTTPStatus.NOT_FOUND,
+    )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(websession, HOME_COORDINATES_1, "http://test.url/badpath")
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
@@ -386,21 +382,20 @@ async def test_update_with_request_exception(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_bom(aresponses, event_loop):
+async def test_update_bom(mock_aioresponse):
     """Test updating feed with BOM (byte order mark) is ok."""
     xml = (
         "\xef\xbb\xbf<?xml version='1.0' encoding='utf-8'?>"
         "<rss version='2.0'><channel><item><title>Title 1</title>"
         "</item></channel></rss>"
     )
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=xml, charset="iso-8859-1", status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=xml.encode("iso-8859-1"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -416,20 +411,19 @@ async def test_update_bom(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_not_xml(aresponses, event_loop):
+async def test_update_not_xml(mock_aioresponse):
     """Test updating feed where returned payload is not XML."""
     # During tests it turned out that occasionally the GDACS server appears to return
     # invalid payload (00 control characters) which results in an exception thrown:
     # ExpatError: not well-formed (invalid token): line 1, column 0
     not_xml = "\x00\x00\x00"
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=not_xml, status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=not_xml,
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )

@@ -38,7 +38,7 @@ class MockSimpleFeedEntry(FeedEntry):
 
     def __init__(
         self,
-        home_coordinates: tuple[float, float],
+        home_coordinates: tuple[float, float] | None,
         rss_entry: FeedItem,
         features: list[type[Geometry]] = DEFAULT_FEATURES,
     ):
@@ -60,7 +60,7 @@ class MockSimpleFeedEntry(FeedEntry):
 class MockFeedItem(FeedItem):
     """Mock feed item."""
 
-    def __init__(self, source, geometries):
+    def __init__(self, source: dict | None, geometries: list[Geometry] | None):
         """Initialise feed item."""
         super().__init__(source)
         self._geometries = geometries
