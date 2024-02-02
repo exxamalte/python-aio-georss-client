@@ -1,10 +1,9 @@
 """GeoRSS Feed."""
-import asyncio
 import codecs
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Dict, Generic, List, Optional, Tuple, TypeVar
+from typing import Generic, TypeVar
 
 import aiohttp
 from aiohttp import ClientSession, client_exceptions
@@ -32,18 +31,18 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
     def __init__(
         self,
         websession: ClientSession,
-        home_coordinates: Tuple[float, float],
+        home_coordinates: tuple[float, float],
         url: str,
-        filter_radius: float = None,
-        filter_categories: List[str] = None,
+        filter_radius: float | None = None,
+        filter_categories: list[str] | None = None,
     ):
         """Initialise this service."""
         self._websession = websession
-        self._home_coordinates = home_coordinates
-        self._filter_radius = filter_radius
-        self._filter_categories = filter_categories
-        self._url = url
-        self._last_timestamp = None
+        self._home_coordinates: tuple[float, float] = home_coordinates
+        self._filter_radius: float | None = filter_radius
+        self._filter_categories: list[str] | None = filter_categories
+        self._url: str = url
+        self._last_timestamp: datetime | None = None
 
     def __repr__(self):
         """Return string representation of this feed."""
@@ -58,9 +57,9 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
     @abstractmethod
     def _new_entry(
         self,
-        home_coordinates: Tuple[float, float],
+        home_coordinates: tuple[float, float],
         rss_entry: FeedItem,
-        global_data: Dict,
+        global_data: dict,
     ) -> T_FEED_ENTRY:
         """Generate a new entry."""
         pass
@@ -73,7 +72,7 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
         """Provide additional namespaces, relevant for this feed."""
         pass
 
-    async def update(self) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
+    async def update(self) -> tuple[str, list[T_FEED_ENTRY] | None]:
         """Update from external source and return filtered entries."""
         status, rss_data = await self._fetch()
         if status == UPDATE_OK:
@@ -101,7 +100,7 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
 
     async def _fetch(
         self, method: str = "GET", headers=None, params=None
-    ) -> Tuple[str, Optional[Feed]]:
+    ) -> tuple[str, Feed | None]:
         """Fetch GeoRSS data from external source."""
         try:
             timeout = aiohttp.ClientTimeout(total=self._client_session_timeout())
@@ -133,7 +132,7 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
                 client_error,
             )
             return UPDATE_ERROR, None
-        except asyncio.TimeoutError:
+        except TimeoutError:
             _LOGGER.warning(
                 "Requesting data from %s failed with timeout error", self._url
             )
@@ -149,7 +148,7 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
             return await response.text()
         return None
 
-    def _filter_entries(self, entries: List[T_FEED_ENTRY]):
+    def _filter_entries(self, entries: list[T_FEED_ENTRY]):
         """Filter the provided entries."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
@@ -183,7 +182,7 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
         _LOGGER.debug("Entries after filtering %s", filtered_entries)
         return filtered_entries
 
-    def _extract_from_feed(self, feed: Feed) -> Dict:
+    def _extract_from_feed(self, feed: Feed) -> dict:
         """Extract global metadata from feed."""
         global_data = {}
         author = feed.author
@@ -192,8 +191,8 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
         return global_data
 
     def _extract_last_timestamp(
-        self, feed_entries: List[T_FEED_ENTRY]
-    ) -> Optional[datetime]:
+        self, feed_entries: list[T_FEED_ENTRY]
+    ) -> datetime | None:
         """Determine latest (newest) entry from the filtered feed."""
         if feed_entries:
             dates = sorted(
@@ -207,6 +206,6 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
         return None
 
     @property
-    def last_timestamp(self) -> Optional[datetime]:
+    def last_timestamp(self) -> datetime | None:
         """Return the last timestamp extracted from this feed."""
         return self._last_timestamp
