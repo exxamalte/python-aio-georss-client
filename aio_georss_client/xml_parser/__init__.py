@@ -2,7 +2,7 @@
 import logging
 from typing import Dict, Optional
 
-import dateparser as dateparser
+import dateparser
 import xmltodict
 
 from aio_georss_client.consts import (

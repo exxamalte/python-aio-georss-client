@@ -21,7 +21,7 @@ class Point(Geometry):
         )
 
     def __hash__(self) -> int:
-        """Return unique hash of this"""
+        """Return unique hash of this geometry."""
         return hash((self.latitude, self.longitude))
 
     def __eq__(self, other: object) -> bool:
@@ -52,10 +52,10 @@ class Polygon(Geometry):
 
     def __repr__(self):
         """Return string representation of this polygon."""
-        return "<{}(centroid={})>".format(self.__class__.__name__, self.centroid)
+        return f"<{self.__class__.__name__}(centroid={self.centroid})>"
 
     def __hash__(self) -> int:
-        """Return unique hash of this"""
+        """Return unique hash of this geometry."""
         return hash(self.points)
 
     def __eq__(self, other: object) -> bool:
@@ -150,7 +150,7 @@ class BoundingBox(Geometry):
         )
 
     def __hash__(self) -> int:
-        """Return unique hash of this"""
+        """Return unique hash of this geometry."""
         return hash((self.bottom_left, self.top_right))
 
     def __eq__(self, other: object) -> bool:

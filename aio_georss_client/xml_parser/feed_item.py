@@ -31,7 +31,7 @@ class FeedItem(FeedOrFeedItem):
 
     def __repr__(self):
         """Return string representation of this feed item."""
-        return "<{}({})>".format(self.__class__.__name__, self.guid)
+        return f"<{self.__class__.__name__}({self.guid})>"
 
     @property
     def guid(self) -> Optional[str]:

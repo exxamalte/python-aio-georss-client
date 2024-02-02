@@ -21,7 +21,7 @@ class FeedDictSource:
 
     def __repr__(self):
         """Return string representation of this feed item."""
-        return "<{}({})>".format(self.__class__.__name__, self.link)
+        return f"<{self.__class__.__name__}({self.link})>"
 
     def _attribute(self, names: List[str]) -> Optional:
         """Get an attribute from this feed or feed item."""
