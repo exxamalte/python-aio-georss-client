@@ -1,8 +1,9 @@
 """GeoRSS feed item."""
-import logging
-from typing import List, Optional, Tuple
+from __future__ import annotations
 
-from aio_georss_client.consts import (
+import logging
+
+from ..consts import (
     XML_TAG_GDACS_BBOX,
     XML_TAG_GEO_LAT,
     XML_TAG_GEO_LONG,
@@ -20,8 +21,8 @@ from aio_georss_client.consts import (
     XML_TAG_ID,
     XML_TAG_SOURCE,
 )
-from aio_georss_client.xml_parser.feed_or_feed_item import FeedOrFeedItem
-from aio_georss_client.xml_parser.geometry import BoundingBox, Geometry, Point, Polygon
+from .feed_or_feed_item import FeedOrFeedItem
+from .geometry import BoundingBox, Geometry, Point, Polygon
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -34,22 +35,22 @@ class FeedItem(FeedOrFeedItem):
         return f"<{self.__class__.__name__}({self.guid})>"
 
     @property
-    def guid(self) -> Optional[str]:
+    def guid(self) -> str | None:
         """Return the guid of this feed item."""
         return self._attribute_with_text([XML_TAG_GUID, XML_TAG_ID])
 
     @property
-    def id(self) -> Optional[str]:
+    def id(self) -> str | None:
         """Return the id of this feed item."""
         return self.guid
 
     @property
-    def source(self) -> Optional[str]:
+    def source(self) -> str | None:
         """Return the source of this feed item."""
         return self._attribute([XML_TAG_SOURCE])
 
     @property
-    def geometries(self) -> Optional[List[Geometry]]:
+    def geometries(self) -> list[Geometry] | None:
         """Return all geometries of this feed item."""
         geometries = []
         for entry in [
@@ -69,7 +70,7 @@ class FeedItem(FeedOrFeedItem):
                 unique_geometries.append(i)
         return unique_geometries
 
-    def _geometry_georss_point(self) -> Optional[List[Point]]:
+    def _geometry_georss_point(self) -> list[Point] | None:
         """Check for georss:point tag."""
         # <georss:point>-0.5 119.8</georss:point>
         point = self._attribute([XML_TAG_GEORSS_POINT])
@@ -81,19 +82,19 @@ class FeedItem(FeedOrFeedItem):
         return None
 
     @staticmethod
-    def _create_georss_point_single(point: Tuple) -> List[Point]:
+    def _create_georss_point_single(point: tuple) -> list[Point]:
         """Create single point from provided coordinates."""
         return [Point(point[0], point[1])]
 
     @staticmethod
-    def _create_georss_point_multiple(point: List) -> List[Point]:
+    def _create_georss_point_multiple(point: list) -> list[Point]:
         """Create multiple points from provided coordinates."""
         points = []
         for entry in point:
             points.append(Point(entry[0], entry[1]))
         return points
 
-    def _geometry_georss_where(self) -> Optional[List[Geometry]]:
+    def _geometry_georss_where(self) -> list[Geometry] | None:
         """Check for georss:where tag."""
         where = self._attribute([XML_TAG_GEORSS_WHERE])
         if where:
@@ -140,7 +141,7 @@ class FeedItem(FeedOrFeedItem):
                 return self._create_polygon(pos_list)
         return None
 
-    def _geometry_geo_point(self) -> Optional[List[Point]]:
+    def _geometry_geo_point(self) -> list[Point] | None:
         """Check for geo:Point tag."""
         # <geo:Point xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
         #   <geo:lat>38.3728</geo:lat>
@@ -154,7 +155,7 @@ class FeedItem(FeedOrFeedItem):
                 return [Point(lat, long)]
         return None
 
-    def _geometry_geo_long_lat(self) -> Optional[List[Point]]:
+    def _geometry_geo_long_lat(self) -> list[Point] | None:
         """Check for geo:long and geo:lat tags."""
         # <geo:long>119.948006</geo:long>
         # <geo:lat>-23.126413</geo:lat>
@@ -164,7 +165,7 @@ class FeedItem(FeedOrFeedItem):
             return [Point(lat, long)]
         return None
 
-    def _geometry_gdacs_bbox(self) -> Optional[List[BoundingBox]]:
+    def _geometry_gdacs_bbox(self) -> list[BoundingBox] | None:
         """Check for gdacs:bbox tag."""
         # <!--gdacs: bbox format = lonmin lonmax latmin latmax -->
         # <gdacs:bbox>164.5652 172.5652 -24.9041 -16.9041</gdacs:bbox>
@@ -177,12 +178,12 @@ class FeedItem(FeedOrFeedItem):
         return None
 
     @staticmethod
-    def _create_bbox_single(bbox: Tuple) -> List[BoundingBox]:
+    def _create_bbox_single(bbox: tuple) -> list[BoundingBox]:
         """Create single bbox from provided tuple of coordinates."""
         return [BoundingBox(Point(bbox[2], bbox[0]), Point(bbox[3], bbox[1]))]
 
     @staticmethod
-    def _create_bbox_multiple(bbox: List) -> List[BoundingBox]:
+    def _create_bbox_multiple(bbox: list) -> list[BoundingBox]:
         """Create multiple bboxes from provided list of coordinates."""
         bounding_boxes = []
         for entry in bbox:
@@ -194,7 +195,7 @@ class FeedItem(FeedOrFeedItem):
                 _LOGGER.warning("Insufficient data for " "bounding box: %s", entry)
         return bounding_boxes
 
-    def _geometry_georss_polygon(self) -> Optional[List[Polygon]]:
+    def _geometry_georss_polygon(self) -> list[Polygon] | None:
         """Check for georss:polygon tag."""
         # <georss:polygon>
         #   -34.937663524 148.597260613
@@ -210,7 +211,7 @@ class FeedItem(FeedOrFeedItem):
         return None
 
     @staticmethod
-    def _create_polygon(polygon_data) -> Optional[List[Polygon]]:
+    def _create_polygon(polygon_data) -> list[Polygon] | None:
         """Create a polygon from the provided coordinates."""
         if polygon_data:
             # Either tuple or an array of tuples.
@@ -221,7 +222,7 @@ class FeedItem(FeedOrFeedItem):
         return None
 
     @staticmethod
-    def _create_polygon_single(polygon_data: Tuple) -> List[Polygon]:
+    def _create_polygon_single(polygon_data: tuple) -> list[Polygon]:
         """Create polygon from provided tuple of coordinates."""
         if len(polygon_data) % 2 != 0:
             # Not even number of coordinates - chop last entry.
@@ -232,7 +233,7 @@ class FeedItem(FeedOrFeedItem):
         return [Polygon(points)]
 
     @staticmethod
-    def _create_polygon_multiple(polygon_data: List) -> List[Polygon]:
+    def _create_polygon_multiple(polygon_data: list) -> list[Polygon]:
         """Create polygon from provided list of coordinates."""
         polygons = []
         for entry in polygon_data:

@@ -1,4 +1,6 @@
 """Base class for the feed manager. This allows managing feeds and their entries throughout their life-cycle."""
+from __future__ import annotations
+
 import logging
 from collections.abc import Awaitable, Callable
 from datetime import datetime

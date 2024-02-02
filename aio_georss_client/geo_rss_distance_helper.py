@@ -1,4 +1,6 @@
 """GeoRSS Distance Helper."""
+from __future__ import annotations
+
 import logging
 
 from haversine import haversine

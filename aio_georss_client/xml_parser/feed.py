@@ -1,8 +1,9 @@
 """GeoRSS feed models."""
-import logging
-from typing import List, Optional
+from __future__ import annotations
 
-from aio_georss_client.consts import (
+import logging
+
+from ..consts import (
     XML_TAG_COPYRIGHT,
     XML_TAG_DOCS,
     XML_TAG_ENTRY,
@@ -14,9 +15,9 @@ from aio_georss_client.consts import (
     XML_TAG_SUBTITLE,
     XML_TAG_TTL,
 )
-from aio_georss_client.xml_parser.feed_image import FeedImage
-from aio_georss_client.xml_parser.feed_item import FeedItem
-from aio_georss_client.xml_parser.feed_or_feed_item import FeedOrFeedItem
+from .feed_image import FeedImage
+from .feed_item import FeedItem
+from .feed_or_feed_item import FeedOrFeedItem
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,42 +26,42 @@ class Feed(FeedOrFeedItem):
     """Represents a feed."""
 
     @property
-    def subtitle(self) -> Optional[str]:
+    def subtitle(self) -> str | None:
         """Return the subtitle of this feed."""
         return self._attribute_with_text([XML_TAG_SUBTITLE])
 
     @property
-    def copyright(self) -> Optional[str]:
+    def copyright(self) -> str | None:
         """Return the copyright of this feed."""
         return self._attribute_with_text([XML_TAG_COPYRIGHT, XML_TAG_RIGHTS])
 
     @property
-    def rights(self) -> Optional[str]:
+    def rights(self) -> str | None:
         """Return the rights of this feed."""
         return self.copyright
 
     @property
-    def generator(self) -> Optional[str]:
+    def generator(self) -> str | None:
         """Return the generator of this feed."""
         return self._attribute_with_text([XML_TAG_GENERATOR])
 
     @property
-    def language(self) -> Optional[str]:
+    def language(self) -> str | None:
         """Return the language of this feed."""
         return self._attribute([XML_TAG_LANGUAGE])
 
     @property
-    def docs(self) -> Optional[str]:
+    def docs(self) -> str | None:
         """Return the docs URL of this feed."""
         return self._attribute_with_text([XML_TAG_DOCS])
 
     @property
-    def ttl(self) -> Optional[int]:
+    def ttl(self) -> int | None:
         """Return the ttl of this feed."""
         return self._attribute([XML_TAG_TTL])
 
     @property
-    def image(self) -> Optional[FeedImage]:
+    def image(self) -> FeedImage | None:
         """Return the image of this feed."""
         image = self._attribute([XML_TAG_IMAGE])
         if image:
@@ -68,7 +69,7 @@ class Feed(FeedOrFeedItem):
         return None
 
     @property
-    def entries(self) -> List[FeedItem]:
+    def entries(self) -> list[FeedItem]:
         """Return the entries of this feed."""
         items = self._attribute([XML_TAG_ITEM, XML_TAG_ENTRY])
         entries = []

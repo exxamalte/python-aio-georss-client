@@ -1,4 +1,6 @@
 """GeoRSS Feed."""
+from __future__ import annotations
+
 import codecs
 import logging
 from abc import ABC, abstractmethod
