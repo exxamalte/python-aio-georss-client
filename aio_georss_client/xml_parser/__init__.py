@@ -1,11 +1,13 @@
 """XML Parser."""
-import logging
-from typing import Dict, Optional
+from __future__ import annotations
 
-import dateparser as dateparser
+import logging
+from datetime import datetime
+
+import dateparser
 import xmltodict
 
-from aio_georss_client.consts import (
+from ..consts import (
     XML_TAG_CHANNEL,
     XML_TAG_DC_DATE,
     XML_TAG_FEED,
@@ -25,7 +27,7 @@ from aio_georss_client.consts import (
     XML_TAG_UPDATED,
     XML_TAG_WIDTH,
 )
-from aio_georss_client.xml_parser.feed import Feed
+from .feed import Feed
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -59,14 +61,16 @@ KEYS_INT = [XML_TAG_HEIGHT, XML_TAG_TTL, XML_TAG_WIDTH]
 class XmlParser:
     """Built-in XML parser."""
 
-    def __init__(self, additional_namespaces=None):
+    def __init__(self, additional_namespaces: dict = None):
         """Initialise the XML parser."""
         self._namespaces = DEFAULT_NAMESPACES
         if additional_namespaces:
             self._namespaces.update(additional_namespaces)
 
     @staticmethod
-    def postprocessor(path, key, value):
+    def postprocessor(
+        path: list[str], key: str, value: str
+    ) -> tuple[str, str | float | int | datetime | tuple]:
         """Conduct type conversion for selected keys."""
         try:
             if key in KEYS_DATE and value:
@@ -88,7 +92,7 @@ class XmlParser:
         return key, value
 
     @staticmethod
-    def _process_coordinates(value):
+    def _process_coordinates(value: str) -> list[float]:
         """Turn white-space separated list of numbers into list of floats."""
         coordinate_values = value.split()
         point_coordinates = []
@@ -96,7 +100,7 @@ class XmlParser:
             point_coordinates.append(float(coordinate_values[i]))
         return point_coordinates
 
-    def parse(self, xml) -> Optional[Feed]:
+    def parse(self, xml: str) -> Feed | None:
         """Parse the provided xml."""
         if xml:
             parsed_dict = xmltodict.parse(
@@ -112,7 +116,7 @@ class XmlParser:
         return None
 
     @staticmethod
-    def _create_feed_from_rss(parsed_dict: Dict) -> Optional[Feed]:
+    def _create_feed_from_rss(parsed_dict: dict) -> Feed | None:
         """Create feed from provided RSS data."""
         rss = parsed_dict.get(XML_TAG_RSS)
         if XML_TAG_CHANNEL in rss:
@@ -125,7 +129,7 @@ class XmlParser:
             return None
 
     @staticmethod
-    def _create_feed_from_feed(parsed_dict: Dict) -> Feed:
+    def _create_feed_from_feed(parsed_dict: dict) -> Feed:
         """Create feed from provided Feed data."""
         feed_data = parsed_dict.get(XML_TAG_FEED)
         return Feed(feed_data)

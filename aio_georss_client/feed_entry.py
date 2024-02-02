@@ -1,9 +1,10 @@
 """Feed Entry."""
+from __future__ import annotations
+
 import logging
 import re
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import List, Optional, Tuple, Type
 
 from .consts import CUSTOM_ATTRIBUTE
 from .geo_rss_distance_helper import GeoRssDistanceHelper
@@ -18,22 +19,22 @@ DEFAULT_FEATURES = [Point, Polygon, BoundingBox]
 class FeedEntry(ABC):
     """Feed entry base class."""
 
-    def __init__(self, home_coordinates: Tuple[float, float], rss_entry: FeedItem):
+    def __init__(self, home_coordinates: tuple[float, float], rss_entry: FeedItem):
         """Initialise this feed entry."""
         self._home_coordinates = home_coordinates
         self._rss_entry = rss_entry
 
     def __repr__(self):
         """Return string representation of this entry."""
-        return "<{}(id={})>".format(self.__class__.__name__, self.external_id)
+        return f"<{self.__class__.__name__}(id={self.external_id})>"
 
     @property
-    def features(self) -> List[Type[Geometry]]:
+    def features(self) -> list[type[Geometry]]:
         """Return the list of geometry types that this feed entry supports."""
         return DEFAULT_FEATURES
 
     @property
-    def geometries(self) -> Optional[List[Geometry]]:
+    def geometries(self) -> list[Geometry] | None:
         """Return all geometries of this entry."""
         if self._rss_entry:
             # Return all geometries that are of type defined in features.
@@ -43,7 +44,7 @@ class FeedEntry(ABC):
         return None
 
     @property
-    def coordinates(self) -> Optional[Tuple[float, float]]:
+    def coordinates(self) -> tuple[float, float] | None:
         """Return the best coordinates (latitude, longitude) of this entry."""
         # This looks for the first point in the list of geometries. If there
         # is no point then return the first entry.
@@ -56,7 +57,7 @@ class FeedEntry(ABC):
         return None
 
     @property
-    def external_id(self) -> Optional[str]:
+    def external_id(self) -> str | None:
         """Return the external id of this entry."""
         if self._rss_entry:
             external_id = self._rss_entry.guid
@@ -68,7 +69,7 @@ class FeedEntry(ABC):
             return external_id
         return None
 
-    def _search_in_external_id(self, regexp) -> Optional[str]:
+    def _search_in_external_id(self, regexp) -> str | None:
         """Find a sub-string in the entry's external id."""
         if self.external_id:
             match = re.search(regexp, self.external_id)
@@ -77,7 +78,7 @@ class FeedEntry(ABC):
         return None
 
     @property
-    def title(self) -> Optional[str]:
+    def title(self) -> str | None:
         """Return the title of this entry."""
         if self._rss_entry:
             return self._rss_entry.title
@@ -92,7 +93,7 @@ class FeedEntry(ABC):
         return None
 
     @property
-    def category(self) -> Optional[str]:
+    def category(self) -> str | None:
         """Return the category of this entry."""
         if (
             self._rss_entry
@@ -105,7 +106,7 @@ class FeedEntry(ABC):
 
     @property
     @abstractmethod
-    def attribution(self) -> Optional[str]:
+    def attribution(self) -> str | None:
         """Return the attribution of this entry."""
         return None
 
@@ -126,21 +127,21 @@ class FeedEntry(ABC):
         return distance
 
     @property
-    def description(self) -> Optional[str]:
+    def description(self) -> str | None:
         """Return the description of this entry."""
         if self._rss_entry and self._rss_entry.description:
             return self._rss_entry.description
         return None
 
     @property
-    def published(self) -> Optional[datetime]:
+    def published(self) -> datetime | None:
         """Return the published date of this entry."""
         if self._rss_entry:
             return self._rss_entry.published_date
         return None
 
     @property
-    def updated(self) -> Optional[datetime]:
+    def updated(self) -> datetime | None:
         """Return the updated date of this entry."""
         if self._rss_entry:
             return self._rss_entry.updated_date

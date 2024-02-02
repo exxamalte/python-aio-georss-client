@@ -1,6 +1,7 @@
 """GeoRSS Distance Helper."""
+from __future__ import annotations
+
 import logging
-from typing import Optional, Tuple
 
 from haversine import haversine
 
@@ -17,7 +18,7 @@ class GeoRssDistanceHelper:
         pass
 
     @staticmethod
-    def extract_coordinates(geometry: Geometry) -> Optional[Tuple[float, float]]:
+    def extract_coordinates(geometry: Geometry) -> tuple[float, float] | None:
         """Extract the best coordinates from the feature for display."""
         latitude = longitude = None
         if isinstance(geometry, Point):
@@ -33,7 +34,7 @@ class GeoRssDistanceHelper:
 
     @staticmethod
     def distance_to_geometry(
-        home_coordinates: Tuple[float, float], geometry: Geometry
+        home_coordinates: tuple[float, float], geometry: Geometry
     ) -> float:
         """Calculate the distance between home coordinates and geometry."""
         distance = float("inf")
@@ -55,7 +56,7 @@ class GeoRssDistanceHelper:
 
     @staticmethod
     def _distance_to_point(
-        home_coordinates: Tuple[float, float], point: Point
+        home_coordinates: tuple[float, float], point: Point
     ) -> float:
         """Calculate the distance between home coordinates and the point."""
         # Swap coordinates to match: (latitude, longitude).
@@ -65,7 +66,7 @@ class GeoRssDistanceHelper:
 
     @staticmethod
     def _distance_to_polygon(
-        home_coordinates: Tuple[float, float], polygon: Polygon
+        home_coordinates: tuple[float, float], polygon: Polygon
     ) -> float:
         """Calculate the distance between home coordinates and the polygon."""
         distance = float("inf")
@@ -93,7 +94,7 @@ class GeoRssDistanceHelper:
 
     @staticmethod
     def _distance_to_bounding_box(
-        home_coordinates: Tuple[float, float], bbox: BoundingBox
+        home_coordinates: tuple[float, float], bbox: BoundingBox
     ) -> float:
         """Calculate the distance between home coordinates and the bbox."""
         distance = float("inf")
@@ -101,8 +102,30 @@ class GeoRssDistanceHelper:
         # home_coordinates is tuple of (latitude, longitude)
         if bbox.is_inside(Point(home_coordinates[0], home_coordinates[1])):
             return 0.0
-        # Now distinguish 8 more cases / quadrants:
-        transposed_point_longitude = home_coordinates[1]
+        # Next find the point on the edge of the bounding box that is closest to the home coordinates.
+        target_point: tuple[
+            float, float
+        ] | None = GeoRssDistanceHelper._find_bounding_box_target_point(
+            home_coordinates, bbox
+        )
+        if target_point:
+            distance = GeoRssDistanceHelper._distance_to_coordinates(
+                home_coordinates, target_point
+            )
+            _LOGGER.debug(
+                "Distance between %s and %s: %s", home_coordinates, bbox, distance
+            )
+            return distance
+        return distance
+
+    @staticmethod
+    def _find_bounding_box_target_point(
+        home_coordinates: tuple[float, float], bbox: BoundingBox
+    ) -> tuple[float, float] | None:
+        """Find best target point of bounding box."""
+        target_point: tuple[float, float] | None = None
+        # Distinguish 8 more cases / quadrants:
+        transposed_point_longitude: float = home_coordinates[1]
         transposed_top_right_longitude = bbox.top_right.longitude
         if bbox.bottom_left.longitude > bbox.top_right.longitude:
             # bounding box spans across 180 degree longitude
@@ -110,7 +133,38 @@ class GeoRssDistanceHelper:
             # only in this case, also transpose the point's longitude
             if transposed_point_longitude < 0:
                 transposed_point_longitude += 360
-        target_point = None
+        target_point = GeoRssDistanceHelper._find_bounding_box_target_point_top(
+            home_coordinates,
+            bbox,
+            transposed_point_longitude,
+            transposed_top_right_longitude,
+            target_point,
+        )
+        target_point = GeoRssDistanceHelper._find_bounding_box_target_point_middle(
+            home_coordinates,
+            bbox,
+            transposed_point_longitude,
+            transposed_top_right_longitude,
+            target_point,
+        )
+        target_point = GeoRssDistanceHelper._find_bounding_box_target_point_bottom(
+            home_coordinates,
+            bbox,
+            transposed_point_longitude,
+            transposed_top_right_longitude,
+            target_point,
+        )
+        return target_point
+
+    @staticmethod
+    def _find_bounding_box_target_point_top(
+        home_coordinates: tuple[float, float],
+        bbox: BoundingBox,
+        transposed_point_longitude: float,
+        transposed_top_right_longitude: float,
+        target_point: tuple[float, float] | None,
+    ) -> tuple[float, float] | None:
+        """Find target point above bounding box."""
         if home_coordinates[0] > bbox.top_right.latitude:
             # 1 - above-left
             if transposed_point_longitude < bbox.bottom_left.longitude:
@@ -128,6 +182,17 @@ class GeoRssDistanceHelper:
             if transposed_point_longitude > transposed_top_right_longitude:
                 # Calculate distance to top right point of bbox.
                 target_point = (bbox.top_right.latitude, bbox.top_right.longitude)
+        return target_point
+
+    @staticmethod
+    def _find_bounding_box_target_point_middle(
+        home_coordinates: tuple[float, float],
+        bbox: BoundingBox,
+        transposed_point_longitude: float,
+        transposed_top_right_longitude: float,
+        target_point: tuple[float, float] | None,
+    ) -> tuple[float, float] | None:
+        """Find target point left or right of bounding box."""
         if bbox.top_right.latitude >= home_coordinates[0] >= bbox.bottom_left.latitude:
             # 4 - left
             if transposed_point_longitude < bbox.bottom_left.longitude:
@@ -137,6 +202,17 @@ class GeoRssDistanceHelper:
             if transposed_point_longitude > transposed_top_right_longitude:
                 # Calculate distance to right longitude of bbox.
                 target_point = (home_coordinates[0], bbox.top_right.longitude)
+        return target_point
+
+    @staticmethod
+    def _find_bounding_box_target_point_bottom(
+        home_coordinates: tuple[float, float],
+        bbox: BoundingBox,
+        transposed_point_longitude: float,
+        transposed_top_right_longitude: float,
+        target_point: tuple[float, float] | None,
+    ) -> tuple[float, float] | None:
+        """Find target point below bounding box."""
         if home_coordinates[0] < bbox.bottom_left.latitude:
             # 6 - below-left
             if transposed_point_longitude < bbox.bottom_left.longitude:
@@ -154,28 +230,19 @@ class GeoRssDistanceHelper:
             if transposed_point_longitude > transposed_top_right_longitude:
                 # Calculate distance to bottom right point of bbox.
                 target_point = (bbox.bottom_left.latitude, bbox.top_right.longitude)
-        if target_point:
-            distance = GeoRssDistanceHelper._distance_to_coordinates(
-                home_coordinates, target_point
-            )
-            _LOGGER.debug(
-                "Distance between %s and %s: %s", home_coordinates, bbox, distance
-            )
-            return distance
-        return distance
+        return target_point
 
     @staticmethod
     def _distance_to_coordinates(
-        home_coordinates: Tuple[float, float], coordinates: Tuple[float, float]
+        home_coordinates: tuple[float, float], coordinates: tuple[float, float]
     ) -> float:
-        """Calculate the distance between home coordinates and the
-        coordinates."""
+        """Calculate the distance between home coordinates and the coordinates."""
         # Expecting coordinates in format: (latitude, longitude).
         return haversine(coordinates, home_coordinates)
 
     @staticmethod
     def _distance_to_edge(
-        home_coordinates: Tuple[float, float], edge: Tuple[Point, Point]
+        home_coordinates: tuple[float, float], edge: tuple[Point, Point]
     ) -> float:
         """Calculate distance between home coordinates and provided edge."""
         perpendicular_point = GeoRssDistanceHelper._perpendicular_point(
@@ -195,9 +262,7 @@ class GeoRssDistanceHelper:
         return float("inf")
 
     @staticmethod
-    def _perpendicular_point(
-        edge: Tuple[Point, Point], point: Point
-    ) -> Optional[Point]:
+    def _perpendicular_point(edge: tuple[Point, Point], point: Point) -> Point | None:
         """Find a perpendicular point on the edge to the provided point."""
         a, b = edge
         # Safety check: a and b can't be an edge if they are the same point.
