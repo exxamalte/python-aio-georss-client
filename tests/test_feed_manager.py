@@ -1,8 +1,8 @@
 """Test for the generic georss feed manager."""
 import datetime
+from unittest import mock as async_mock
 
 import aiohttp
-import mock as async_mock
 import pytest
 
 from aio_georss_client.consts import UPDATE_OK_NO_DATA
@@ -26,7 +26,6 @@ async def test_feed_manager(aresponses, event_loop):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -173,7 +172,6 @@ async def test_feed_manager_no_timestamp(aresponses, event_loop):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -223,7 +221,6 @@ async def test_feed_manager_with_status_callback(aresponses, event_loop):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
