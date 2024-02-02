@@ -1,5 +1,7 @@
 """Test for the generic georss feed manager."""
+import asyncio
 import datetime
+from http import HTTPStatus
 from unittest import mock as async_mock
 
 import aiohttp
@@ -16,16 +18,15 @@ HOME_COORDINATES_2 = (-37.0, 150.0)
 
 
 @pytest.mark.asyncio
-async def test_feed_manager(aresponses, event_loop):
+async def test_feed_manager(mock_aioresponse):
     """Test the feed manager."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_1.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_1.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -97,11 +98,10 @@ async def test_feed_manager(aresponses, event_loop):
         updated_entity_external_ids.clear()
         removed_entity_external_ids.clear()
 
-        aresponses.add(
-            "test.url",
-            "/testpath",
-            "get",
-            aresponses.Response(text=load_fixture("generic_feed_4.xml"), status=200),
+        mock_aioresponse.get(
+            "http://test.url/testpath",
+            status=HTTPStatus.OK,
+            body=load_fixture("generic_feed_4.xml"),
         )
 
         await feed_manager.update()
@@ -145,11 +145,9 @@ async def test_feed_manager(aresponses, event_loop):
         updated_entity_external_ids.clear()
         removed_entity_external_ids.clear()
 
-        aresponses.add(
-            "test.url",
-            "/testpath",
-            "get",
-            aresponses.Response(status=500),
+        mock_aioresponse.get(
+            "http://test.url/testpath",
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
         )
 
         await feed_manager.update()
@@ -162,16 +160,15 @@ async def test_feed_manager(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_feed_manager_no_timestamp(aresponses, event_loop):
+async def test_feed_manager_no_timestamp(mock_aioresponse):
     """Test updating feed is ok."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_5.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_5.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -211,16 +208,15 @@ async def test_feed_manager_no_timestamp(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_feed_manager_with_status_callback(aresponses, event_loop):
+async def test_feed_manager_with_status_callback(mock_aioresponse):
     """Test the feed manager."""
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_1.xml"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_1.xml"),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoRssFeed(
             websession, HOME_COORDINATES_1, "http://test.url/testpath"
         )
@@ -287,11 +283,9 @@ async def test_feed_manager_with_status_callback(aresponses, event_loop):
         removed_entity_external_ids.clear()
         status_update.clear()
 
-        aresponses.add(
-            "test.url",
-            "/testpath",
-            "get",
-            aresponses.Response(status=500),
+        mock_aioresponse.get(
+            "http://test.url/testpath",
+            status=HTTPStatus.INTERNAL_SERVER_ERROR,
         )
 
         await feed_manager.update()
