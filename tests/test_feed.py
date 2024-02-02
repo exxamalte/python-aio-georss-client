@@ -115,7 +115,10 @@ async def test_update_ok_feed_3(mock_aioresponse):
         assert feed_entry.external_id == "1234"
         assert len(feed_entry.geometries) == 1
         assert isinstance(feed_entry.geometries[0], Polygon)
-        assert feed_entry.coordinates == (-34.93728111547821, 148.59710883878262)
+        assert feed_entry.coordinates == (
+            pytest.approx(-34.93728111547821),
+            pytest.approx(148.59710883878262),
+        )
         assert round(abs(feed_entry.distance_to_home - 491.7), 1) == 0
 
         feed_entry = entries[1]
@@ -123,7 +126,10 @@ async def test_update_ok_feed_3(mock_aioresponse):
         assert len(feed_entry.geometries) == 2
         assert isinstance(feed_entry.geometries[0], Point)
         assert isinstance(feed_entry.geometries[1], Polygon)
-        assert feed_entry.coordinates == (-34.937170989, 148.597182317)
+        assert feed_entry.coordinates == (
+            pytest.approx(-34.937170989),
+            pytest.approx(148.597182317),
+        )
         assert round(abs(feed_entry.distance_to_home - 491.7), 1) == 0
 
         feed_entry = entries[2]
@@ -131,7 +137,10 @@ async def test_update_ok_feed_3(mock_aioresponse):
         assert len(feed_entry.geometries) == 2
         assert isinstance(feed_entry.geometries[0], Polygon)
         assert isinstance(feed_entry.geometries[1], Polygon)
-        assert feed_entry.coordinates == (-29.962746645660683, 152.43090880416074)
+        assert feed_entry.coordinates == (
+            pytest.approx(-29.962746645660683),
+            pytest.approx(152.43090880416074),
+        )
         assert round(abs(feed_entry.distance_to_home - 176.5), 1) == 0
 
         feed_entry = entries[3]
@@ -139,7 +148,10 @@ async def test_update_ok_feed_3(mock_aioresponse):
         assert len(feed_entry.geometries) == 2
         assert isinstance(feed_entry.geometries[0], Point)
         assert isinstance(feed_entry.geometries[1], Point)
-        assert feed_entry.coordinates == (-33.2345, 154.789)
+        assert feed_entry.coordinates == (
+            pytest.approx(-33.2345),
+            pytest.approx(154.789),
+        )
         assert round(abs(feed_entry.distance_to_home - 172.3), 1) == 0
 
         feed_entry = entries[4]
@@ -147,7 +159,10 @@ async def test_update_ok_feed_3(mock_aioresponse):
         assert len(feed_entry.geometries) == 2
         assert isinstance(feed_entry.geometries[0], Point)
         assert isinstance(feed_entry.geometries[1], Polygon)
-        assert feed_entry.coordinates == (-31.2345, 152.789)
+        assert feed_entry.coordinates == (
+            pytest.approx(-31.2345),
+            pytest.approx(152.789),
+        )
         assert round(abs(feed_entry.distance_to_home - 172.3), 1) == 0
 
 
@@ -173,7 +188,10 @@ async def test_update_ok_feed_6(mock_aioresponse):
         assert feed_entry.external_id == "1234"
         assert len(feed_entry.geometries) == 1
         assert isinstance(feed_entry.geometries[0], BoundingBox)
-        assert feed_entry.coordinates == (-20.9041, 168.5652)
+        assert feed_entry.coordinates == (
+            pytest.approx(-20.9041),
+            pytest.approx(168.5652),
+        )
         assert round(abs(feed_entry.distance_to_home - 1493.3), 1) == 0
 
 
@@ -245,7 +263,10 @@ async def test_update_ok_feed_8(mock_aioresponse):
         assert feed_entry.title == "Title 1"
         assert feed_entry.external_id == "1234"
         assert feed_entry.category == "Category 1"
-        assert feed_entry.coordinates == (-37.2345, 149.1234)
+        assert feed_entry.coordinates == (
+            pytest.approx(-37.2345),
+            pytest.approx(149.1234),
+        )
         assert round(abs(feed_entry.distance_to_home - 714.4), 1) == 0
 
 
