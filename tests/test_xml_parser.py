@@ -37,6 +37,18 @@ def test_simple_3():
     assert feed is None
 
 
+def test_simple_4():
+    """Test parsing various actual XML files."""
+    xml_parser = XmlParser()
+    xml = load_fixture("xml_parser_simple_4.xml")
+    feed = xml_parser.parse(xml)
+    assert feed is not None
+    assert feed.entries is not None
+    assert len(feed.entries) == 1
+    # Double-check that an integer in the XML is automatically converted to string.
+    assert feed.entries[0].title == "1"
+
+
 def test_complex_1():
     """Test parsing various actual XML files."""
     xml_parser = XmlParser()
