@@ -65,7 +65,7 @@ class FeedEntry(ABC):
                 external_id = self.title
             if not external_id:
                 # Use geometry as ID as a fallback.
-                external_id = hash(self.coordinates)
+                external_id = str(hash(self.coordinates))
             return external_id
         return None
 
