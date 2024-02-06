@@ -36,7 +36,7 @@ class FeedOrFeedItem(FeedDictSource):
     @staticmethod
     def _create_categories(categories: list) -> list[str]:
         """Create categories from provided list."""
-        result = []
+        result: list[str] = []
         for item in categories:
             if XML_ATTR_TERM in item:
                 # <category term="Category 1"/>

@@ -89,7 +89,7 @@ class FeedItem(FeedOrFeedItem):
     @staticmethod
     def _create_georss_point_multiple(point: list) -> list[Point]:
         """Create multiple points from provided coordinates."""
-        points = []
+        points: list[Point] = []
         for entry in point:
             points.append(Point(entry[0], entry[1]))
         return points

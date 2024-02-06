@@ -46,7 +46,7 @@ class FeedDictSource:
     @staticmethod
     def _attribute_in_structure(obj, keys: list[str]) -> Optional:
         """Return the attribute found under the chain of keys."""
-        key = keys.pop(0)
+        key: str = keys.pop(0)
         if key in obj:
             return (
                 FeedDictSource._attribute_in_structure(obj[key], keys)

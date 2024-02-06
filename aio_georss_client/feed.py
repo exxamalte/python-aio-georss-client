@@ -186,8 +186,8 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
 
     def _extract_from_feed(self, feed: Feed) -> dict:
         """Extract global metadata from feed."""
-        global_data = {}
-        author = feed.author
+        global_data: dict = {}
+        author: str | None = feed.author
         if author:
             global_data[ATTR_ATTRIBUTION] = author
         return global_data
@@ -197,12 +197,12 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
     ) -> datetime | None:
         """Determine latest (newest) entry from the filtered feed."""
         if feed_entries:
-            dates = sorted(
+            dates: list[datetime] = sorted(
                 [entry.published for entry in feed_entries if entry.published],
                 reverse=True,
             )
             if dates:
-                last_timestamp = dates[0]
+                last_timestamp: datetime = dates[0]
                 _LOGGER.debug("Last timestamp: %s", last_timestamp)
                 return last_timestamp
         return None
