@@ -37,7 +37,7 @@ class GeoRssDistanceHelper:
         home_coordinates: tuple[float, float], geometry: Geometry
     ) -> float:
         """Calculate the distance between home coordinates and geometry."""
-        distance = float("inf")
+        distance: float = float("inf")
         if isinstance(geometry, Point):
             distance = GeoRssDistanceHelper._distance_to_point(
                 home_coordinates, geometry
@@ -69,7 +69,7 @@ class GeoRssDistanceHelper:
         home_coordinates: tuple[float, float], polygon: Polygon
     ) -> float:
         """Calculate the distance between home coordinates and the polygon."""
-        distance = float("inf")
+        distance: float = float("inf")
         # Check if home is inside the polygon.
         if polygon.is_inside(Point(home_coordinates[0], home_coordinates[1])):
             return 0.0
@@ -97,7 +97,7 @@ class GeoRssDistanceHelper:
         home_coordinates: tuple[float, float], bbox: BoundingBox
     ) -> float:
         """Calculate the distance between home coordinates and the bbox."""
-        distance = float("inf")
+        distance: float = float("inf")
         # Check if home is inside the bounding box.
         # home_coordinates is tuple of (latitude, longitude)
         if bbox.is_inside(Point(home_coordinates[0], home_coordinates[1])):
@@ -245,7 +245,7 @@ class GeoRssDistanceHelper:
         home_coordinates: tuple[float, float], edge: tuple[Point, Point]
     ) -> float:
         """Calculate distance between home coordinates and provided edge."""
-        perpendicular_point = GeoRssDistanceHelper._perpendicular_point(
+        perpendicular_point: Point | None = GeoRssDistanceHelper._perpendicular_point(
             edge, Point(home_coordinates[0], home_coordinates[1])
         )
         # If there is a perpendicular point on the edge -> calculate distance.

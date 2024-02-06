@@ -95,7 +95,7 @@ class XmlParser:
     def _process_coordinates(value: str) -> list[float]:
         """Turn white-space separated list of numbers into list of floats."""
         coordinate_values = value.split()
-        point_coordinates = []
+        point_coordinates: list[float] = []
         for i in range(0, len(coordinate_values)):
             point_coordinates.append(float(coordinate_values[i]))
         return point_coordinates

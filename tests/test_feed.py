@@ -60,7 +60,8 @@ async def test_update_ok(mock_aioresponse):
 
         feed_entry = entries[3]
         assert feed_entry.title is None
-        assert feed_entry.external_id == hash(feed_entry.coordinates)
+        assert isinstance(feed_entry.external_id, str)
+        assert feed_entry.external_id == str(hash(feed_entry.coordinates))
 
         feed_entry = entries[4]
         assert feed_entry.title == "Title 5"

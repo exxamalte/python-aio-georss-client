@@ -72,7 +72,7 @@ class Feed(FeedOrFeedItem):
     def entries(self) -> list[FeedItem]:
         """Return the entries of this feed."""
         items = self._attribute([XML_TAG_ITEM, XML_TAG_ENTRY])
-        entries = []
+        entries: list[FeedItem] = []
         if items and isinstance(items, list):
             for item in items:
                 entries.append(FeedItem(item))

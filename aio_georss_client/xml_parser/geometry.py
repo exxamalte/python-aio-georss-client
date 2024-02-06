@@ -11,8 +11,8 @@ class Point(Geometry):
 
     def __init__(self, latitude: float, longitude: float):
         """Initialise point."""
-        self._latitude = latitude
-        self._longitude = longitude
+        self._latitude: float = latitude
+        self._longitude: float = longitude
 
     def __repr__(self):
         """Return string representation of this point."""
@@ -48,7 +48,7 @@ class Polygon(Geometry):
 
     def __init__(self, points: list[Point]):
         """Initialise polygon."""
-        self._points = points
+        self._points: list[Point] = points
 
     def __repr__(self):
         """Return string representation of this polygon."""
@@ -63,14 +63,14 @@ class Polygon(Geometry):
         return self.__class__ == other.__class__ and self.points == other.points
 
     @property
-    def points(self) -> list | None:
+    def points(self) -> list[Point] | None:
         """Return the points of this polygon."""
         return self._points
 
     @property
     def edges(self) -> list[tuple[Point, Point]]:
         """Return all edges of this polygon."""
-        edges = []
+        edges: list[tuple[Point, Point]] = []
         for i in range(1, len(self.points)):
             previous = self.points[i - 1]
             current = self.points[i]
@@ -80,17 +80,17 @@ class Polygon(Geometry):
     @property
     def centroid(self) -> Point:
         """Find the polygon's centroid as a best approximation."""
-        longitudes_list = [point.longitude for point in self.points]
-        latitudes_list = [point.latitude for point in self.points]
-        number_of_points = len(self.points)
-        longitude = sum(longitudes_list) / number_of_points
-        latitude = sum(latitudes_list) / number_of_points
+        longitudes_list: list[float] = [point.longitude for point in self.points]
+        latitudes_list: list[float] = [point.latitude for point in self.points]
+        number_of_points: int = len(self.points)
+        longitude: float = sum(longitudes_list) / number_of_points
+        latitude: float = sum(latitudes_list) / number_of_points
         return Point(latitude, longitude)
 
     def is_inside(self, point: Point | None) -> bool:
         """Check if the provided point is inside this polygon."""
         if point:
-            crossings = 0
+            crossings: int = 0
             for edge in self.edges:
                 if Polygon._ray_crosses_segment(point, edge):
                     crossings += 1
@@ -140,8 +140,8 @@ class BoundingBox(Geometry):
 
     def __init__(self, bottom_left: Point, top_right: Point):
         """Initialise bounding box."""
-        self._bottom_left = bottom_left
-        self._top_right = top_right
+        self._bottom_left: Point = bottom_left
+        self._top_right: Point = top_right
 
     def __repr__(self):
         """Return string representation of this bounding box."""
@@ -174,18 +174,20 @@ class BoundingBox(Geometry):
     @property
     def centroid(self) -> Point:
         """Find the bounding box's centroid as a best approximation."""
-        transposed_top_right_longitude = self._top_right.longitude
+        transposed_top_right_longitude: float = self._top_right.longitude
         if self._bottom_left.longitude > self._top_right.longitude:
             # bounding box spans across 180 degree longitude
             transposed_top_right_longitude = self._top_right.longitude + 360
-        longitude = (self._bottom_left.longitude + transposed_top_right_longitude) / 2
-        latitude = (self._bottom_left.latitude + self._top_right.latitude) / 2
+        longitude: float = (
+            self._bottom_left.longitude + transposed_top_right_longitude
+        ) / 2
+        latitude: float = (self._bottom_left.latitude + self._top_right.latitude) / 2
         return Point(latitude, longitude)
 
     def is_inside(self, point: Point) -> bool:
         """Check if the provided point is inside this bounding box."""
         if point:
-            transposed_point_longitude = point.longitude
+            transposed_point_longitude: float = point.longitude
             transposed_top_right_longitude = self._top_right.longitude
             if self._bottom_left.longitude > self._top_right.longitude:
                 # bounding box spans across 180 degree longitude

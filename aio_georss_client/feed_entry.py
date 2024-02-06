@@ -21,8 +21,8 @@ class FeedEntry(ABC):
 
     def __init__(self, home_coordinates: tuple[float, float], rss_entry: FeedItem):
         """Initialise this feed entry."""
-        self._home_coordinates = home_coordinates
-        self._rss_entry = rss_entry
+        self._home_coordinates: tuple[float, float] = home_coordinates
+        self._rss_entry: FeedItem = rss_entry
 
     def __repr__(self):
         """Return string representation of this entry."""
@@ -60,12 +60,12 @@ class FeedEntry(ABC):
     def external_id(self) -> str | None:
         """Return the external id of this entry."""
         if self._rss_entry:
-            external_id = self._rss_entry.guid
+            external_id: str | None = self._rss_entry.guid
             if not external_id:
                 external_id = self.title
             if not external_id:
                 # Use geometry as ID as a fallback.
-                external_id = hash(self.coordinates)
+                external_id = str(hash(self.coordinates))
             return external_id
         return None
 
@@ -115,7 +115,7 @@ class FeedEntry(ABC):
         """Return the distance in km of this entry to the home coordinates."""
         # This goes through all geometries and reports back the closest
         # distance to any of them.
-        distance = float("inf")
+        distance: float = float("inf")
         if self.geometries and len(self.geometries) >= 1:
             for geometry in self.geometries:
                 distance = min(

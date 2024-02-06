@@ -84,7 +84,7 @@ async def test_feed_manager(mock_aioresponse):
         assert feed_entry.title == "Title 3"
         assert feed_entry.external_id == "Title 3"
 
-        external_id = hash((-37.8901, 149.7890))
+        external_id = str(hash((-37.8901, 149.7890)))
         feed_entry = entries.get(external_id)
         assert feed_entry.title is None
         assert feed_entry.external_id == external_id
