@@ -1,5 +1,12 @@
 # Changes
 
+## 0.12 (06/02/2024)
+* Added Python 3.12 support.
+* Removed Python 3.7 support.
+* Bumped library versions: black, flake8, isort.
+* Migrated to pytest.
+* Code quality improvements.
+
 ## 0.11 (26/01/2023)
 * Added Python 3.11 support.
 * Removed deprecated asynctest.
