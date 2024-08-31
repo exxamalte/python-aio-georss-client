@@ -1,4 +1,5 @@
 """Test for the generic georss feed entry."""
+
 import datetime
 from unittest import mock
 
@@ -21,19 +22,19 @@ def test_simple_feed_entry():
     assert feed_entry.published is None
     assert feed_entry.updated is None
     assert (
-        feed_entry._search_in_external_id(r"External ID (?P<custom_attribute>.+)$")
+        feed_entry._search_in_external_id(r"External ID (?P<custom_attribute>.+)$")  # noqa: SLF001
         is None
     )
-    assert feed_entry._search_in_title(r"Title (?P<custom_attribute>.+)$") is None
+    assert feed_entry._search_in_title(r"Title (?P<custom_attribute>.+)$") is None  # noqa: SLF001
     assert (
-        feed_entry._search_in_description(r"Description (?P<custom_attribute>.+)$")
+        feed_entry._search_in_description(r"Description (?P<custom_attribute>.+)$")  # noqa: SLF001
         is None
     )
     # Test _string2boolean
-    assert not feed_entry._string2boolean("False")
-    assert not feed_entry._string2boolean("no")
-    assert feed_entry._string2boolean("True")
-    assert feed_entry._string2boolean("yes")
+    assert not feed_entry._string2boolean("False")  # noqa: SLF001
+    assert not feed_entry._string2boolean("no")  # noqa: SLF001
+    assert feed_entry._string2boolean("True")  # noqa: SLF001
+    assert feed_entry._string2boolean("yes")  # noqa: SLF001
 
 
 def test_feed_entry_features():
@@ -76,10 +77,10 @@ def test_feed_entry_search_in_attributes():
     feed_entry = MockFeedEntry(MOCK_HOME_COORDINATES, rss_entry)
     assert repr(feed_entry) == "<MockFeedEntry(id=Test 123)>"
 
-    assert feed_entry._search_in_external_id(r"Test (?P<custom_attribute>.+)$") == "123"
-    assert feed_entry._search_in_title(r"Title (?P<custom_attribute>.+)$") == "123"
+    assert feed_entry._search_in_external_id(r"Test (?P<custom_attribute>.+)$") == "123"  # noqa: SLF001
+    assert feed_entry._search_in_title(r"Title (?P<custom_attribute>.+)$") == "123"  # noqa: SLF001
     assert (
-        feed_entry._search_in_description(r"Description (?P<custom_attribute>.+)$")
+        feed_entry._search_in_description(r"Description (?P<custom_attribute>.+)$")  # noqa: SLF001
         == "123"
     )
     assert feed_entry.category == "Category 1"
