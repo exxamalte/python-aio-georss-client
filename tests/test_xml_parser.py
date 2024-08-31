@@ -202,7 +202,7 @@ def test_complex_1():
         7,
         19,
         52,
-        tzinfo=datetime.timezone(datetime.timedelta(hours=-7), "PDT"),
+        tzinfo=datetime.timezone(datetime.timedelta(hours=-2)),
     )
     geometries = feed_entry.geometries
     assert len(geometries) == 1
