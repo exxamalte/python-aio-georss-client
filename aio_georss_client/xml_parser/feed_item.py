@@ -1,4 +1,5 @@
 """GeoRSS feed item."""
+
 from __future__ import annotations
 
 import logging
@@ -77,8 +78,7 @@ class FeedItem(FeedOrFeedItem):
         if point:
             if isinstance(point, tuple):
                 return FeedItem._create_georss_point_single(point)
-            else:
-                return FeedItem._create_georss_point_multiple(point)
+            return FeedItem._create_georss_point_multiple(point)
         return None
 
     @staticmethod
@@ -89,10 +89,7 @@ class FeedItem(FeedOrFeedItem):
     @staticmethod
     def _create_georss_point_multiple(point: list) -> list[Point]:
         """Create multiple points from provided coordinates."""
-        points: list[Point] = []
-        for entry in point:
-            points.append(Point(entry[0], entry[1]))
-        return points
+        return [Point(entry[0], entry[1]) for entry in point]
 
     def _geometry_georss_where(self) -> list[Geometry] | None:
         """Check for georss:where tag."""
@@ -173,8 +170,7 @@ class FeedItem(FeedOrFeedItem):
         if bbox:
             if isinstance(bbox, tuple):
                 return FeedItem._create_bbox_single(bbox)
-            else:
-                return FeedItem._create_bbox_multiple(bbox)
+            return FeedItem._create_bbox_multiple(bbox)
         return None
 
     @staticmethod
@@ -217,8 +213,7 @@ class FeedItem(FeedOrFeedItem):
             # Either tuple or an array of tuples.
             if isinstance(polygon_data, tuple):
                 return FeedItem._create_polygon_single(polygon_data)
-            else:
-                return FeedItem._create_polygon_multiple(polygon_data)
+            return FeedItem._create_polygon_multiple(polygon_data)
         return None
 
     @staticmethod
@@ -227,10 +222,14 @@ class FeedItem(FeedOrFeedItem):
         if len(polygon_data) % 2 != 0:
             # Not even number of coordinates - chop last entry.
             polygon_data = polygon_data[0 : len(polygon_data) - 1]
-        points = []
-        for i in range(0, len(polygon_data), 2):
-            points.append(Point(polygon_data[i], polygon_data[i + 1]))
-        return [Polygon(points)]
+        return [
+            Polygon(
+                [
+                    Point(polygon_data[i], polygon_data[i + 1])
+                    for i in range(0, len(polygon_data), 2)
+                ]
+            )
+        ]
 
     @staticmethod
     def _create_polygon_multiple(polygon_data: list) -> list[Polygon]:

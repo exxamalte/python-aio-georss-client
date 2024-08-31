@@ -1,4 +1,5 @@
 """Geometry models."""
+
 from __future__ import annotations
 
 
@@ -16,9 +17,7 @@ class Point(Geometry):
 
     def __repr__(self):
         """Return string representation of this point."""
-        return "<{}(latitude={}, longitude={})>".format(
-            self.__class__.__name__, self.latitude, self.longitude
-        )
+        return f"<{self.__class__.__name__}(latitude={self.latitude}, longitude={self.longitude})>"
 
     def __hash__(self) -> int:
         """Return unique hash of this geometry."""
@@ -120,7 +119,7 @@ class Polygon(Geometry):
         if bx < 0:
             bx += 360.0
 
-        if py == ay or py == by:
+        if py in (ay, by):
             py += 0.00000001
         if (py > by or py < ay) or (px > max(ax, bx)):
             return False
@@ -145,9 +144,7 @@ class BoundingBox(Geometry):
 
     def __repr__(self):
         """Return string representation of this bounding box."""
-        return "<{}(bottom_left={}, top_right={})>".format(
-            self.__class__.__name__, self._bottom_left, self._top_right
-        )
+        return f"<{self.__class__.__name__}(bottom_left={self._bottom_left}, top_right={self._top_right})>"
 
     def __hash__(self) -> int:
         """Return unique hash of this geometry."""
@@ -201,3 +198,4 @@ class BoundingBox(Geometry):
                 <= transposed_point_longitude
                 <= transposed_top_right_longitude
             )
+        return False

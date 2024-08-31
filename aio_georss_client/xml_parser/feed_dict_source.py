@@ -1,4 +1,5 @@
 """GeoRSS feed dict source."""
+
 from __future__ import annotations
 
 from typing import Optional
@@ -53,6 +54,7 @@ class FeedDictSource:
                 if keys
                 else obj[key]
             )
+        return None
 
     @property
     def title(self) -> str | None:

@@ -1,4 +1,5 @@
 """GeoRSS Distance Helper."""
+
 from __future__ import annotations
 
 import logging
@@ -15,7 +16,6 @@ class GeoRssDistanceHelper:
 
     def __init__(self):
         """Initialize the geo distance helper."""
-        pass
 
     @staticmethod
     def extract_coordinates(geometry: Geometry) -> tuple[float, float] | None:
@@ -103,10 +103,8 @@ class GeoRssDistanceHelper:
         if bbox.is_inside(Point(home_coordinates[0], home_coordinates[1])):
             return 0.0
         # Next find the point on the edge of the bounding box that is closest to the home coordinates.
-        target_point: tuple[
-            float, float
-        ] | None = GeoRssDistanceHelper._find_bounding_box_target_point(
-            home_coordinates, bbox
+        target_point: tuple[float, float] | None = (
+            GeoRssDistanceHelper._find_bounding_box_target_point(home_coordinates, bbox)
         )
         if target_point:
             distance = GeoRssDistanceHelper._distance_to_coordinates(
@@ -154,7 +152,7 @@ class GeoRssDistanceHelper:
             transposed_top_right_longitude,
             target_point,
         )
-        return target_point
+        return target_point  # noqa: RET504
 
     @staticmethod
     def _find_bounding_box_target_point_top(

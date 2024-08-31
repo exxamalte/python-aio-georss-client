@@ -1,15 +1,16 @@
 """GeoRSS Feed."""
+
 from __future__ import annotations
 
-import codecs
-import logging
 from abc import ABC, abstractmethod
+import codecs
 from datetime import datetime
+import logging
+from pyexpat import ExpatError
 from typing import Generic, TypeVar
 
 import aiohttp
 from aiohttp import ClientSession, client_exceptions
-from pyexpat import ExpatError
 
 from .consts import (
     ATTR_ATTRIBUTION,
@@ -48,13 +49,7 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
 
     def __repr__(self):
         """Return string representation of this feed."""
-        return "<{}(home={}, url={}, radius={}, categories={})>".format(
-            self.__class__.__name__,
-            self._home_coordinates,
-            self._url,
-            self._filter_radius,
-            self._filter_categories,
-        )
+        return f"<{self.__class__.__name__}(home={self._home_coordinates}, url={self._url}, radius={self._filter_radius}, categories={self._filter_categories})>"
 
     @abstractmethod
     def _new_entry(
@@ -64,7 +59,6 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
         global_data: dict,
     ) -> T_FEED_ENTRY:
         """Generate a new entry."""
-        pass
 
     def _client_session_timeout(self) -> int:
         """Define client session timeout in seconds. Override if necessary."""
@@ -72,33 +66,29 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
 
     def _additional_namespaces(self):
         """Provide additional namespaces, relevant for this feed."""
-        pass
 
     async def update(self) -> tuple[str, list[T_FEED_ENTRY] | None]:
         """Update from external source and return filtered entries."""
         status, rss_data = await self._fetch()
         if status == UPDATE_OK:
             if rss_data:
-                entries = []
                 global_data = self._extract_from_feed(rss_data)
                 # Extract data from feed entries.
-                for rss_entry in rss_data.entries:
-                    entries.append(
-                        self._new_entry(self._home_coordinates, rss_entry, global_data)
-                    )
+                entries: list = [
+                    self._new_entry(self._home_coordinates, rss_entry, global_data)
+                    for rss_entry in rss_data.entries
+                ]
                 filtered_entries = self._filter_entries(entries)
                 self._last_timestamp = self._extract_last_timestamp(filtered_entries)
                 return UPDATE_OK, filtered_entries
-            else:
-                # Should not happen.
-                return UPDATE_OK, None
-        elif status == UPDATE_OK_NO_DATA:
+            # Should not happen.
+            return UPDATE_OK, None
+        if status == UPDATE_OK_NO_DATA:
             # Happens for example if the server returns 304
             return UPDATE_OK_NO_DATA, None
-        else:
-            # Error happened while fetching the feed.
-            self._last_timestamp = None
-            return UPDATE_ERROR, None
+        # Error happened while fetching the feed.
+        self._last_timestamp = None
+        return UPDATE_ERROR, None
 
     async def _fetch(
         self, method: str = "GET", headers=None, params=None

@@ -1,10 +1,11 @@
 """Feed Entry."""
+
 from __future__ import annotations
 
-import logging
-import re
 from abc import ABC, abstractmethod
 from datetime import datetime
+import logging
+import re
 
 from .consts import CUSTOM_ATTRIBUTE
 from .geo_rss_distance_helper import GeoRssDistanceHelper
