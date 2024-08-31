@@ -1,4 +1,5 @@
 """Test geometries."""
+
 from aio_georss_client.xml_parser.geometry import BoundingBox, Point, Polygon
 
 

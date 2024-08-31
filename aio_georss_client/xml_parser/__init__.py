@@ -1,8 +1,9 @@
 """XML Parser."""
+
 from __future__ import annotations
 
-import logging
 from datetime import datetime
+import logging
 
 import dateutil
 import xmltodict
@@ -61,7 +62,7 @@ KEYS_INT = [XML_TAG_HEIGHT, XML_TAG_TTL, XML_TAG_WIDTH]
 class XmlParser:
     """Built-in XML parser."""
 
-    def __init__(self, additional_namespaces: dict = None):
+    def __init__(self, additional_namespaces: dict | None = None):
         """Initialise the XML parser."""
         self._namespaces = DEFAULT_NAMESPACES
         if additional_namespaces:
@@ -95,9 +96,9 @@ class XmlParser:
     def _process_coordinates(value: str) -> list[float]:
         """Turn white-space separated list of numbers into list of floats."""
         coordinate_values = value.split()
-        point_coordinates: list[float] = []
-        for i in range(0, len(coordinate_values)):
-            point_coordinates.append(float(coordinate_values[i]))
+        point_coordinates: list[float] = [
+            float(coordinate_values[i]) for i in range(len(coordinate_values))
+        ]
         return point_coordinates
 
     def parse(self, xml: str) -> Feed | None:
@@ -122,11 +123,10 @@ class XmlParser:
         if XML_TAG_CHANNEL in rss:
             channel = rss.get(XML_TAG_CHANNEL)
             return Feed(channel)
-        else:
-            _LOGGER.warning(
-                "Invalid structure: %s not followed by %s", XML_TAG_RSS, XML_TAG_CHANNEL
-            )
-            return None
+        _LOGGER.warning(
+            "Invalid structure: %s not followed by %s", XML_TAG_RSS, XML_TAG_CHANNEL
+        )
+        return None
 
     @staticmethod
     def _create_feed_from_feed(parsed_dict: dict) -> Feed:

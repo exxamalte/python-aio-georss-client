@@ -1,4 +1,5 @@
 """Test for the generic georss feed manager."""
+
 import asyncio
 import datetime
 from http import HTTPStatus

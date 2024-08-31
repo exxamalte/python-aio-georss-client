@@ -1,4 +1,5 @@
 """Tests for general setup."""
+
 from aio_georss_client import __version__
 
 

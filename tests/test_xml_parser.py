@@ -1,8 +1,9 @@
 """Tests for XML parser."""
+
 import datetime
+from pyexpat import ExpatError
 
 import pytest
-from pyexpat import ExpatError
 
 from aio_georss_client.xml_parser import XmlParser
 from aio_georss_client.xml_parser.geometry import Point, Polygon

@@ -1,4 +1,5 @@
 """Tests for base classes."""
+
 import asyncio
 import datetime
 from http import HTTPStatus
