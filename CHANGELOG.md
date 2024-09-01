@@ -1,5 +1,11 @@
 # Changes
 
+## 0.13 (01/09/2024)
+* Removed dateparser and replaced with python-dateutil.
+* Removed Python 3.8 support.
+* Bumped library versions: ruff.
+* Code quality improvements.
+
 ## 0.12 (06/02/2024)
 * Added Python 3.12 support.
 * Removed Python 3.7 support.
