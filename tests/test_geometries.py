@@ -155,6 +155,8 @@ def test_bounding_box_3():
     assert bbox.centroid.longitude == 180.0
     assert bbox.is_inside(Point(-2.5, -179.0))
     assert not bbox.is_inside(Point(2.5, -170.0))
+    # Special case to increase test coverage.
+    assert not bbox.is_inside(None)
 
 
 def test_bounding_box_equality():
