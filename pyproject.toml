@@ -1,3 +1,56 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aio_georss_client"
+version  = "0.13"
+requires-python = ">= 3.9"
+authors = [
+  {name = "Malte Franken", email = "coding@subspace.de"},
+]
+description = "An async GeoRSS client library."
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["homeassistant", "georss"]
+classifiers = [
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Development Status :: 5 - Production/Stable",
+]
+dependencies = [
+    "aiohttp>=3.7.4,<4",
+    "haversine>=2.8.1",
+    "xmltodict>=0.13.0",
+    "python-dateutil>=2.9.0",
+]
+
+[project.optional-dependencies]
+tests = [
+    "pytest-asyncio",
+    "pytest-timeout",
+    "pytest-xdist",
+    "pytest-cov",
+    "coverage",
+    "mock",
+    "aioresponses",
+]
+
+[project.urls]
+Repository = "https://github.com/exxamalte/python-aio-georss-client"
+Issues = "https://github.com/exxamalte/python-aio-georss-client/issues"
+Changelog = "https://github.com/exxamalte/python-aio-georss-client/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+include = ["aio_georss_client*"]
+
 [tool.ruff.lint]
 select = [
     "A001", # Variable {name} is shadowing a Python builtin
