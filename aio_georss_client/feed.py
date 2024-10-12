@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+import asyncio
 import codecs
 from datetime import datetime
 import logging
@@ -124,7 +125,7 @@ class GeoRssFeed(Generic[T_FEED_ENTRY], ABC):
                 client_error,
             )
             return UPDATE_ERROR, None
-        except TimeoutError:
+        except asyncio.TimeoutError:
             _LOGGER.warning(
                 "Requesting data from %s failed with timeout error", self._url
             )
