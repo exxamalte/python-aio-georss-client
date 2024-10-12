@@ -3,8 +3,10 @@
 import asyncio
 import datetime
 from http import HTTPStatus
+from unittest.mock import MagicMock
 
 import aiohttp
+from aiohttp import ClientOSError
 import pytest
 
 from aio_georss_client.consts import UPDATE_ERROR, UPDATE_OK, UPDATE_OK_NO_DATA
@@ -389,6 +391,20 @@ async def test_update_ok_then_error(mock_aioresponse):
 
 
 @pytest.mark.asyncio
+async def test_update_with_client_exception():
+    """Test updating feed results in error."""
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()):
+        mock_websession = MagicMock()
+        mock_websession.request.side_effect = ClientOSError
+        feed = MockGeoRssFeed(
+            mock_websession, HOME_COORDINATES_1, "http://test.url/badpath"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_ERROR
+        assert feed.last_timestamp is None
+
+
+@pytest.mark.asyncio
 async def test_update_with_request_exception(mock_aioresponse):
     """Test updating feed raises exception."""
     mock_aioresponse.get(
@@ -401,6 +417,20 @@ async def test_update_with_request_exception(mock_aioresponse):
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
         assert entries is None
+        assert feed.last_timestamp is None
+
+
+@pytest.mark.asyncio
+async def test_update_with_timeout_error():
+    """Test updating feed results in timeout error."""
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()):
+        mock_websession = MagicMock()
+        mock_websession.request.side_effect = asyncio.TimeoutError
+        feed = MockGeoRssFeed(
+            mock_websession, HOME_COORDINATES_1, "http://test.url/goodpath"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_ERROR
         assert feed.last_timestamp is None
 
 
