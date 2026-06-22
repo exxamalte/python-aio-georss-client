@@ -1,5 +1,14 @@
 # Changes
 
+## 2026.6.0 (23/06/2026)
+* Added Python 3.13 and 3.14 support.
+* Removed Python 3.9 and 3.10 support.
+* Bump haversine to 2.9.0
+* Bump xmltodict to 1.0.4
+* Bump ruff to 0.15.18
+* Code quality improvements.
+* Changing to date-based versioning
+
 ## 0.14 (13/10/2024)
 * Bump xmltodict to 0.14.1
 * Bump ruff to 0.6.9
