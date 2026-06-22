@@ -79,6 +79,9 @@ class XmlParser:
             if key in KEYS_FLOAT and value:
                 return key, float(value)
             if key in KEYS_FLOAT_LIST and value:
+                # Check if value is a dict -> need to extract #text attribute
+                if isinstance(value, dict):
+                    value = value["#text"]
                 point_coordinates = XmlParser._process_coordinates(value)
                 # Return tuple of coordinates to make this conversion
                 # compatible with parsing multiple tags of the same type and
