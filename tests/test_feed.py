@@ -19,9 +19,9 @@ HOME_COORDINATES_2 = (-37.0, 150.0)
 
 
 @pytest.mark.asyncio
-async def test_update_ok(mock_aioresponse):
+async def test_update_ok(mock_aiointercept):
     """Test updating feed is ok."""
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_1.xml"),
@@ -72,9 +72,9 @@ async def test_update_ok(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_feed_2(mock_aioresponse):
+async def test_update_ok_feed_2(mock_aiointercept):
     """Test updating feed is ok."""
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_2.xml"),
@@ -98,9 +98,9 @@ async def test_update_ok_feed_2(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_feed_3(mock_aioresponse):
+async def test_update_ok_feed_3(mock_aiointercept):
     """Test updating feed is ok."""
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_3.xml"),
@@ -171,9 +171,9 @@ async def test_update_ok_feed_3(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_feed_6(mock_aioresponse):
+async def test_update_ok_feed_6(mock_aiointercept):
     """Test updating feed is ok."""
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_6.xml"),
@@ -200,9 +200,9 @@ async def test_update_ok_feed_6(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_duplicate_geometries(mock_aioresponse):
+async def test_update_duplicate_geometries(mock_aiointercept):
     """Test updating feed is ok."""
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_7.xml"),
@@ -246,9 +246,9 @@ async def test_update_duplicate_geometries(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_feed_8(mock_aioresponse):
+async def test_update_ok_feed_8(mock_aiointercept):
     """Test updating feed is ok."""
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_8.xml"),
@@ -275,9 +275,9 @@ async def test_update_ok_feed_8(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_radius_filtering(mock_aioresponse):
+async def test_update_ok_with_radius_filtering(mock_aiointercept):
     """Test updating feed is ok."""
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_1.xml"),
@@ -300,9 +300,9 @@ async def test_update_ok_with_radius_filtering(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_radius_and_category_filtering(mock_aioresponse):
+async def test_update_ok_with_radius_and_category_filtering(mock_aiointercept):
     """Test updating feed is ok."""
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_1.xml"),
@@ -322,7 +322,7 @@ async def test_update_ok_with_radius_and_category_filtering(mock_aioresponse):
         assert len(entries) == 1
         assert round(abs(entries[0].distance_to_home - 77.0), 1) == 0
 
-        mock_aioresponse.get(
+        mock_aiointercept.get(
             "http://test.url/testpath",
             status=HTTPStatus.OK,
             body=load_fixture("generic_feed_1.xml"),
@@ -342,9 +342,9 @@ async def test_update_ok_with_radius_and_category_filtering(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_error(mock_aioresponse):
+async def test_update_error(mock_aiointercept):
     """Test updating feed results in error."""
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/badpath",
         status=HTTPStatus.NOT_FOUND,
     )
@@ -357,9 +357,9 @@ async def test_update_error(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_then_error(mock_aioresponse):
+async def test_update_ok_then_error(mock_aiointercept):
     """Test updating feed goes fine, followed by an error."""
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_1.xml"),
@@ -380,7 +380,7 @@ async def test_update_ok_then_error(mock_aioresponse):
         assert len(entries) == 5
         assert feed.last_timestamp is not None
 
-        mock_aioresponse.get(
+        mock_aiointercept.get(
             "http://test.url/testpath",
             status=HTTPStatus.NOT_FOUND,
         )
@@ -405,9 +405,9 @@ async def test_update_with_client_exception():
 
 
 @pytest.mark.asyncio
-async def test_update_with_request_exception(mock_aioresponse):
+async def test_update_with_request_exception(mock_aiointercept):
     """Test updating feed raises exception."""
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/badpath",
         status=HTTPStatus.NOT_FOUND,
     )
@@ -435,14 +435,14 @@ async def test_update_with_timeout_error():
 
 
 @pytest.mark.asyncio
-async def test_update_bom(mock_aioresponse):
+async def test_update_bom(mock_aiointercept):
     """Test updating feed with BOM (byte order mark) is ok."""
     xml = (
         "\xef\xbb\xbf<?xml version='1.0' encoding='utf-8'?>"
         "<rss version='2.0'><channel><item><title>Title 1</title>"
         "</item></channel></rss>"
     )
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=xml.encode("iso-8859-1"),
@@ -464,13 +464,13 @@ async def test_update_bom(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_not_xml(mock_aioresponse):
+async def test_update_not_xml(mock_aiointercept):
     """Test updating feed where returned payload is not XML."""
     # During tests it turned out that occasionally the GDACS server appears to return
     # invalid payload (00 control characters) which results in an exception thrown:
     # ExpatError: not well-formed (invalid token): line 1, column 0
     not_xml = "\x00\x00\x00"
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=not_xml,
